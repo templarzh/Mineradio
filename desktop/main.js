@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain, shell, screen, session, globalShortcut, dia
 const net = require('net');
 const path = require('path');
 const fs = require('fs');
+const crypto = require('crypto');
 const { execFile, spawn } = require('child_process');
 
 let mainWindow = null;
@@ -36,6 +37,7 @@ const NETEASE_LOGIN_PARTITION = 'persist:mineradio-netease-login';
 const NETEASE_LOGIN_URL = 'https://music.163.com/#/login';
 const QQ_LOGIN_PARTITION = 'persist:mineradio-qqmusic-login';
 const QQ_LOGIN_URL = 'https://y.qq.com/n/ryqq/profile';
+const LOCAL_AUDIO_EXTENSIONS = new Set(['.mp3', '.flac', '.wav', '.ogg', '.m4a', '.aac', '.opus']);
 
 const CHROMIUM_PERFORMANCE_SWITCHES = [
   ['autoplay-policy', 'no-user-gesture-required'],
@@ -257,6 +259,47 @@ function getWindowState(win) {
 
 function getSenderWindow(event) {
   return BrowserWindow.fromWebContents(event.sender);
+}
+
+function isSupportedLocalAudioPath(filePath) {
+  return LOCAL_AUDIO_EXTENSIONS.has(path.extname(String(filePath || "")).toLowerCase());
+}
+
+function localAudioTitle(filePath) {
+  return path.basename(String(filePath || "")).replace(/\.[^.]+$/, "") || "本地音乐";
+}
+
+function localAudioSongFromPath(filePath) {
+  const stat = fs.statSync(filePath);
+  return {
+    provider: "local",
+    source: "local",
+    type: "local",
+    id: "local:" + crypto.createHash("sha1").update(filePath + ":" + stat.size + ":" + stat.mtimeMs).digest("hex"),
+    name: localAudioTitle(filePath),
+    artist: "本地文件",
+    album: "",
+    cover: "",
+    duration: 0,
+    localPath: filePath,
+    localKey: [filePath, stat.size || 0, Math.round(stat.mtimeMs || 0)].join(":"),
+    size: stat.size || 0,
+    modifiedAt: Math.round(stat.mtimeMs || 0),
+  };
+}
+
+function collectLocalAudioFiles(root, out, limit) {
+  if (!root || out.length >= limit) return out;
+  let entries = [];
+  try { entries = fs.readdirSync(root, { withFileTypes: true }); } catch (e) { return out; }
+  entries.sort((a, b) => a.name.localeCompare(b.name, "zh-Hans-CN"));
+  for (const entry of entries) {
+    if (out.length >= limit) break;
+    const fullPath = path.join(root, entry.name);
+    if (entry.isDirectory()) collectLocalAudioFiles(fullPath, out, limit);
+    else if (entry.isFile() && isSupportedLocalAudioPath(fullPath)) out.push(fullPath);
+  }
+  return out;
 }
 
 function focusMainWindow() {
@@ -1157,6 +1200,32 @@ ipcMain.handle('mineradio-import-json-file', async (event) => {
     return { ok: true, filePath, text };
   } catch (e) {
     return { ok: false, error: e.message || 'IMPORT_FAILED' };
+  }
+});
+
+ipcMain.handle('mineradio-import-local-audio-files', async (event, opts = {}) => {
+  try {
+    const owner = getSenderWindow(event);
+    const directory = !!opts.directory;
+    const result = await dialog.showOpenDialog(owner, {
+      title: directory ? '选择本地音乐文件夹' : '选择本地音乐',
+      properties: directory ? ['openDirectory'] : ['openFile', 'multiSelections'],
+      filters: directory ? undefined : [
+        { name: 'Audio', extensions: Array.from(LOCAL_AUDIO_EXTENSIONS).map(ext => ext.slice(1)) },
+      ],
+    });
+    if (result.canceled || !result.filePaths || !result.filePaths.length) return { ok: false, canceled: true, songs: [] };
+    const maxFiles = Math.max(1, Math.min(3000, Number(opts.limit) || 1200));
+    const paths = directory
+      ? collectLocalAudioFiles(result.filePaths[0], [], maxFiles)
+      : result.filePaths.filter(isSupportedLocalAudioPath).slice(0, maxFiles);
+    const songs = paths.map((filePath) => {
+      try { return localAudioSongFromPath(filePath); }
+      catch (e) { return null; }
+    }).filter(Boolean);
+    return { ok: true, directory, songs, count: songs.length, truncated: directory && paths.length >= maxFiles };
+  } catch (e) {
+    return { ok: false, error: e.message || 'LOCAL_AUDIO_IMPORT_FAILED', songs: [] };
   }
 });
 

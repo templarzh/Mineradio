@@ -118,6 +118,62 @@ const MIME = {
   '.ico':  'image/x-icon',
   '.svg':  'image/svg+xml',
 };
+const LOCAL_AUDIO_EXTENSIONS = new Set(['.mp3', '.flac', '.wav', '.ogg', '.m4a', '.aac', '.opus']);
+function localAudioContentType(filePath) {
+  const ext = path.extname(String(filePath || '')).toLowerCase();
+  if (ext === '.flac') return 'audio/flac';
+  if (ext === '.mp3') return 'audio/mpeg';
+  if (ext === '.m4a' || ext === '.aac') return 'audio/mp4';
+  if (ext === '.ogg' || ext === '.opus') return 'audio/ogg';
+  if (ext === '.wav') return 'audio/wav';
+  return 'application/octet-stream';
+}
+function isSupportedLocalAudioPath(filePath) {
+  return LOCAL_AUDIO_EXTENSIONS.has(path.extname(String(filePath || '')).toLowerCase());
+}
+function serveLocalAudio(req, res, filePath) {
+  if (!filePath || !isSupportedLocalAudioPath(filePath)) {
+    res.writeHead(400, { 'Access-Control-Allow-Origin': '*' });
+    res.end('Invalid local audio path');
+    return;
+  }
+  let stat;
+  try {
+    stat = fs.statSync(filePath);
+    if (!stat.isFile()) throw new Error('Not a file');
+  } catch (e) {
+    res.writeHead(404, { 'Access-Control-Allow-Origin': '*' });
+    res.end('Local audio not found');
+    return;
+  }
+  const type = localAudioContentType(filePath);
+  const range = req.headers.range || '';
+  const match = range && String(range).match(/bytes=(\d*)-(\d*)/);
+  if (match) {
+    const start = match[1] ? Number(match[1]) : 0;
+    const end = match[2] ? Math.min(Number(match[2]), stat.size - 1) : stat.size - 1;
+    if (start <= end && start < stat.size) {
+      res.writeHead(206, {
+        'Content-Type': type,
+        'Content-Length': end - start + 1,
+        'Content-Range': 'bytes ' + start + '-' + end + '/' + stat.size,
+        'Accept-Ranges': 'bytes',
+        'Access-Control-Allow-Origin': '*',
+        'Cache-Control': 'no-store',
+      });
+      fs.createReadStream(filePath, { start, end }).pipe(res);
+      return;
+    }
+  }
+  res.writeHead(200, {
+    'Content-Type': type,
+    'Content-Length': stat.size,
+    'Accept-Ranges': 'bytes',
+    'Access-Control-Allow-Origin': '*',
+    'Cache-Control': 'no-store',
+  });
+  fs.createReadStream(filePath).pipe(res);
+}
 
 // ---------- Cookie 持久化 ----------
 const COOKIE_ATTRIBUTE_NAMES = new Set(['path', 'domain', 'expires', 'max-age', 'samesite', 'secure', 'httponly']);
@@ -4179,6 +4235,17 @@ const server = http.createServer(async (req, res) => {
       while (true) { const c = await reader.read(); if (c.done) break; res.write(c.value); }
       res.end();
     } catch (err) { console.error('[Audio]', err); res.writeHead(500); res.end(); }
+    return;
+  }
+
+  if (pn === '/api/local/audio') {
+    try {
+      serveLocalAudio(req, res, url.searchParams.get('path') || '');
+    } catch (err) {
+      console.error('[LocalAudio]', err);
+      res.writeHead(500, { 'Access-Control-Allow-Origin': '*' });
+      res.end('Local audio failed');
+    }
     return;
   }
 
