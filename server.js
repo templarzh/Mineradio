@@ -362,7 +362,6 @@ async function navidromeDispatch(endpoint, query, opts) {
     const res = await fetch(targetUrl, Object.assign(fetchOpts, dispatcher));
     let text = '';
     try { text = await res.text(); } catch (_) {}
-    attempts.push({ method, status: res.status });
     if (opts.debug) console.log('  -> status:', res.status, 'ct:', res.headers.get && res.headers.get('content-type'), 'body:', text.slice(0, 200));
     return { res, text };
   }
@@ -4018,7 +4017,9 @@ const server = http.createServer(async (req, res) => {
       try {
         const probeQuery = buildNavidromeAuthQuery({}, password);
         console.log('[NavidromeLogin] probe query:', probeQuery.replace(/(t=)[^&]+/, 't=***'));
-        const body2 = await navidromeRequestWithPassword('/rest/getUser', {}, password);
+        console.log('[NavidromeLogin] target server:', server, 'endpoint: /rest/getUser');
+        const debugProbe = process.env.MINERADIO_NAVIDROME_DEBUG !== '0';
+        const body2 = await navidromeDispatch('/rest/getUser', probeQuery, { timeoutMs: 12000, debug: debugProbe });
         const user = body2 && body2.user;
         if (!user || !user.username) throw new Error('NAVIDROME_NO_USER');
         saveNavidromeConfig({ nickname: user.username, userId: String(user.username || ''), lastCheckAt: Date.now(), lastError: '' });
