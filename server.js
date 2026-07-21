@@ -347,55 +347,77 @@ async function navidromeDispatch(endpoint, query, opts) {
   const dispatcher = agent ? { dispatcher: agent } : {};
   const controller = new AbortController();
   const timer = setTimeout(function(){ controller.abort(); }, opts.timeoutMs || 12000);
+  const attempts = [];
+  function mask(s) {
+    return String(s || '').replace(/(t=)[^&]+/g, '$1***').replace(/(t%3D)[^&%]+/g, '$1***');
+  }
+  async function tryOnce(method, targetUrl, body) {
+    if (opts.debug) console.log('[NavidromeProbe]', method, mask(targetUrl), body ? 'body=' + mask(body).slice(0, 220) : '');
+    const reqHeaders = Object.assign({}, baseHeaders);
+    const fetchOpts = { method, headers: reqHeaders, signal: controller.signal };
+    if (body && method !== 'GET') {
+      reqHeaders['Content-Type'] = 'application/x-www-form-urlencoded; charset=utf-8';
+      fetchOpts.body = body;
+    }
+    const res = await fetch(targetUrl, Object.assign(fetchOpts, dispatcher));
+    let text = '';
+    try { text = await res.text(); } catch (_) {}
+    attempts.push({ method, status: res.status });
+    if (opts.debug) console.log('  -> status:', res.status, 'ct:', res.headers.get && res.headers.get('content-type'), 'body:', text.slice(0, 200));
+    return { res, text };
+  }
+  function parsePayload(text) {
+    let p = null;
+    try { p = JSON.parse(text); } catch (e) {}
+    if (p && p['subsonic-response']) {
+      return p['subsonic-response'];
+    }
+    return null;
+  }
+  function planUrl(includeQuery) {
+    const cleanEndpoint = endpoint.split('?')[0];
+    return includeQuery ? url : (server + cleanEndpoint);
+  }
   try {
-    const postHeaders = Object.assign({}, baseHeaders, { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' });
-    let res;
-    try {
-      res = await fetch(url, Object.assign({ method: 'POST', headers: postHeaders, body: query, signal: controller.signal }, dispatcher));
-    } catch (e) {
-      res = null;
-      throw e;
+    const plans = [
+      { name: 'POST+URL+body', method: 'POST', targetUrl: planUrl(true),  body: query },
+      { name: 'POST+body',     method: 'POST', targetUrl: planUrl(false), body: query },
+      { name: 'GET+URL',       method: 'GET',  targetUrl: planUrl(true),  body: null },
+    ];
+    let lastErr = null;
+    for (const plan of plans) {
+      let res, text;
+      try {
+        ({ res, text } = await tryOnce(plan.method, plan.targetUrl, plan.body));
+      } catch (e) {
+        lastErr = e;
+        attempts.push({ plan: plan.name, error: (e && e.message) || String(e) });
+        if (opts.debug) console.log('  plan', plan.name, 'threw', e && e.message);
+        continue;
+      }
+      if (!res) { lastErr = new Error('NAVIDROME_NO_RESPONSE'); attempts.push({ plan: plan.name, status: 0 }); continue; }
+      attempts.push({ plan: plan.name, status: res.status });
+      if (!res.ok && res.status !== 401) {
+        lastErr = new Error('NAVIDROME_HTTP_' + res.status + (text ? ':' + text.slice(0, 200) : ''));
+        continue;
+      }
+      const body = parsePayload(text);
+      if (!body) { lastErr = new Error('NAVIDROME_INVALID_RESPONSE'); continue; }
+      if (body.status === 'failed') {
+        const err = new Error('SUBSONIC_FAILED:' + (body.error && body.error.message ? body.error.message : 'unknown'));
+        err.code = body.error && body.error.code;
+        err.attempts = attempts;
+        err.lastPlan = plan.name;
+        lastErr = err;
+        continue;
+      }
+      return body;
     }
-    if (res && res.ok) {
-      const payload = await navidromeParseResponse(res, url);
-      if (payload) return payload;
-    }
-    if (res) {
-      try { res.body && res.body.cancel && res.body.cancel(); } catch (_) {}
-    }
-    const getHeaders = Object.assign({}, baseHeaders);
-    res = await fetch(url, Object.assign({ method: 'GET', headers: getHeaders, signal: controller.signal }, dispatcher));
-    if (!res.ok && res.status !== 401) {
-      const text = await res.text().catch(function(){ return ''; });
-      throw new Error('NAVIDROME_HTTP_' + res.status + (text ? ':' + text.slice(0, 200) : ''));
-    }
-    return await navidromeParseResponse(res, url);
+    if (lastErr && lastErr.attempts) lastErr.attempts = attempts;
+    throw lastErr || new Error('NAVIDROME_NO_RESPONSE');
   } finally {
     clearTimeout(timer);
   }
-}
-async function navidromeParseResponse(res, requestUrl) {
-  const ct = (res.headers.get && res.headers.get('content-type')) || '';
-  let payload;
-  if (ct.indexOf('application/json') >= 0) {
-    payload = await res.json();
-  } else {
-    const text = await res.text();
-    try { payload = JSON.parse(text); }
-    catch (e) { payload = null; }
-  }
-  if (!payload) throw new Error('NAVIDROME_INVALID_RESPONSE');
-  if (payload && payload['subsonic-response']) {
-    const body = payload['subsonic-response'];
-    if (body.status === 'failed') {
-      const err = new Error('SUBSONIC_FAILED:' + (body.error && body.error.message ? body.error.message : 'unknown'));
-      err.code = body.error && body.error.code;
-      if (requestUrl) err.requestUrl = requestUrl;
-      throw err;
-    }
-    return body;
-  }
-  return payload;
 }
 async function navidromeRequest(endpoint, params, opts) {
   opts = opts || {};
@@ -3994,6 +4016,8 @@ const server = http.createServer(async (req, res) => {
       saveNavidromeConfig({ server, username, password, allowSelfSigned });
       let info;
       try {
+        const probeQuery = buildNavidromeAuthQuery({}, password);
+        console.log('[NavidromeLogin] probe query:', probeQuery.replace(/(t=)[^&]+/, 't=***'));
         const body2 = await navidromeRequestWithPassword('/rest/getUser', {}, password);
         const user = body2 && body2.user;
         if (!user || !user.username) throw new Error('NAVIDROME_NO_USER');
@@ -4002,10 +4026,12 @@ const server = http.createServer(async (req, res) => {
         info.saved = true;
         info.ok = true;
       } catch (e) {
+        const attemptInfo = (e.attempts || []).map(function(a){ return (a.plan || a.method) + ':' + (a.status || a.error || '?'); }).join(' -> ');
         console.log('[NavidromeLogin] failed for', username, '@', server, '->', e.message);
+        console.log('[NavidromeLogin] attempts chain:', attemptInfo || '(none)');
         saveNavidromeConfig(prev);
         saveNavidromeConfig({ password: '' });
-        sendJSON(res, { provider: 'navidrome', loggedIn: false, error: e.message || 'NAVIDROME_LOGIN_FAILED', message: '登录失败：' + (e.message || '未知错误') }, 400);
+        sendJSON(res, { provider: 'navidrome', loggedIn: false, error: e.message || 'NAVIDROME_LOGIN_FAILED', attempts: e.attempts || null, message: '登录失败：' + (e.message || '未知错误') + ' · ' + attemptInfo }, 400);
         return;
       }
       sendJSON(res, info);

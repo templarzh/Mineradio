@@ -23917,8 +23917,9 @@ async function submitNavidromeLogin() {
   if (saveBtn) saveBtn.disabled = true;
   if (pingBtn) pingBtn.disabled = true;
   if (statusEl) { statusEl.textContent = '正在连接 Navidrome…'; statusEl.className = 'preview'; }
+  var info = null;
   try {
-    var info = await apiJson('/api/navidrome/login', {
+    info = await apiJson('/api/navidrome/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ server: server, username: username, password: password, allowSelfSigned: allowSelfSigned }),
@@ -23941,8 +23942,11 @@ async function submitNavidromeLogin() {
   } catch (e) {
     navidromeLoginStatus = Object.assign({}, navidromeLoginStatus, { loggedIn: false, lastError: (e && e.message) || 'NAVIDROME_LOGIN_FAILED' });
     var errMsg = (e && e.message) || '登录失败';
-    if (statusEl) { statusEl.textContent = errMsg + ' · 见 toast 或控制台'; statusEl.className = 'fail'; }
-    showToast('Navidrome 登录失败: ' + errMsg);
+    var attemptsList = info && Array.isArray(info.attempts) ? info.attempts : null;
+    var attemptsInfo = attemptsList ? attemptsList.map(function(a){ return (a.plan || a.method || '?') + ':' + (a.status || a.error || '?'); }).join('→') : '';
+    var detail = attemptsInfo ? ' · ' + attemptsInfo : '';
+    if (statusEl) { statusEl.textContent = errMsg + detail; statusEl.className = 'fail'; }
+    showToast('Navidrome 登录失败: ' + errMsg + detail);
   } finally {
     navidromeLoginBusy = false;
     if (saveBtn) saveBtn.disabled = false;
