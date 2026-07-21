@@ -23940,7 +23940,9 @@ async function submitNavidromeLogin() {
     }, 480);
   } catch (e) {
     navidromeLoginStatus = Object.assign({}, navidromeLoginStatus, { loggedIn: false, lastError: (e && e.message) || 'NAVIDROME_LOGIN_FAILED' });
-    if (statusEl) { statusEl.textContent = (e && e.message) ? e.message : '登录失败'; statusEl.className = 'fail'; }
+    var errMsg = (e && e.message) || '登录失败';
+    if (statusEl) { statusEl.textContent = errMsg + ' · 见 toast 或控制台'; statusEl.className = 'fail'; }
+    showToast('Navidrome 登录失败: ' + errMsg);
   } finally {
     navidromeLoginBusy = false;
     if (saveBtn) saveBtn.disabled = false;
@@ -23979,6 +23981,7 @@ async function pingNavidrome() {
       }
       statusEl.className = /SUBSONIC_FAILED.*credentials|Unauthorized/i.test(msg) ? 'scan' : 'fail';
     }
+    showToast('Navidrome 测速: ' + ((e && e.message) || '失败'));
   } finally {
     navidromeLoginBusy = false;
     if (pingBtn) pingBtn.disabled = false;

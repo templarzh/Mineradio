@@ -333,21 +333,48 @@ async function navidromeFetchWithTimeout(url, opts, timeoutMs) {
     clearTimeout(timer);
   }
 }
-async function navidromeRequest(endpoint, params, opts) {
+async function navidromeDispatch(endpoint, query, opts) {
   opts = opts || {};
   const server = String(navidromeConfig.server || '').trim();
   if (!server) throw new Error('NAVIDROME_NOT_CONFIGURED');
-  const query = typeof params === 'string' ? params : buildNavidromeAuthQuery(params || {});
   const sep = endpoint.indexOf('?') >= 0 ? '&' : '?';
   const url = server + endpoint + sep + query;
-  const fetchOpts = navidromeFetchOptions(opts.body ? { 'Content-Type': 'application/json' } : null);
-  if (opts.body) fetchOpts.body = opts.body;
-  if (opts.method) fetchOpts.method = opts.method;
-  const res = await navidromeFetchWithTimeout(url, fetchOpts, opts.timeoutMs || 12000);
-  if (!res.ok && res.status !== 401) {
-    const text = await res.text().catch(function(){ return ''; });
-    throw new Error('NAVIDROME_HTTP_' + res.status + (text ? ':' + text.slice(0, 200) : ''));
+  const baseHeaders = {
+    'User-Agent': UA,
+    'Accept': 'application/json,application/xml,text/xml;q=0.9,*/*;q=0.8',
+  };
+  const agent = navidromeSelfSignedAgent();
+  const dispatcher = agent ? { dispatcher: agent } : {};
+  const controller = new AbortController();
+  const timer = setTimeout(function(){ controller.abort(); }, opts.timeoutMs || 12000);
+  try {
+    const postHeaders = Object.assign({}, baseHeaders, { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' });
+    let res;
+    try {
+      res = await fetch(url, Object.assign({ method: 'POST', headers: postHeaders, body: query, signal: controller.signal }, dispatcher));
+    } catch (e) {
+      res = null;
+      throw e;
+    }
+    if (res && res.ok) {
+      const payload = await navidromeParseResponse(res, url);
+      if (payload) return payload;
+    }
+    if (res) {
+      try { res.body && res.body.cancel && res.body.cancel(); } catch (_) {}
+    }
+    const getHeaders = Object.assign({}, baseHeaders);
+    res = await fetch(url, Object.assign({ method: 'GET', headers: getHeaders, signal: controller.signal }, dispatcher));
+    if (!res.ok && res.status !== 401) {
+      const text = await res.text().catch(function(){ return ''; });
+      throw new Error('NAVIDROME_HTTP_' + res.status + (text ? ':' + text.slice(0, 200) : ''));
+    }
+    return await navidromeParseResponse(res, url);
+  } finally {
+    clearTimeout(timer);
   }
+}
+async function navidromeParseResponse(res, requestUrl) {
   const ct = (res.headers.get && res.headers.get('content-type')) || '';
   let payload;
   if (ct.indexOf('application/json') >= 0) {
@@ -357,43 +384,27 @@ async function navidromeRequest(endpoint, params, opts) {
     try { payload = JSON.parse(text); }
     catch (e) { payload = null; }
   }
+  if (!payload) throw new Error('NAVIDROME_INVALID_RESPONSE');
   if (payload && payload['subsonic-response']) {
     const body = payload['subsonic-response'];
     if (body.status === 'failed') {
       const err = new Error('SUBSONIC_FAILED:' + (body.error && body.error.message ? body.error.message : 'unknown'));
       err.code = body.error && body.error.code;
+      if (requestUrl) err.requestUrl = requestUrl;
       throw err;
     }
     return body;
   }
   return payload;
 }
+async function navidromeRequest(endpoint, params, opts) {
+  opts = opts || {};
+  const query = typeof params === 'string' ? params : buildNavidromeAuthQuery(params || {});
+  return navidromeDispatch(endpoint, query, opts);
+}
 async function navidromeRequestWithPassword(endpoint, params, password) {
-  const server = String(navidromeConfig.server || '').trim();
-  if (!server) throw new Error('NAVIDROME_NOT_CONFIGURED');
   const query = buildNavidromeAuthQuery(params || {}, password);
-  const sep = endpoint.indexOf('?') >= 0 ? '&' : '?';
-  const url = server + endpoint + sep + query;
-  const res = await navidromeFetchWithTimeout(url, navidromeFetchOptions(), 12000);
-  if (!res.ok) throw new Error('NAVIDROME_HTTP_' + res.status);
-  const ct = (res.headers.get && res.headers.get('content-type')) || '';
-  let payload;
-  if (ct.indexOf('application/json') >= 0) {
-    payload = await res.json();
-  } else {
-    const text = await res.text();
-    try { payload = JSON.parse(text); } catch (e) { payload = null; }
-  }
-  if (payload && payload['subsonic-response']) {
-    const body = payload['subsonic-response'];
-    if (body.status === 'failed') {
-      const err = new Error('SUBSONIC_FAILED:' + (body.error && body.error.message ? body.error.message : 'unknown'));
-      err.code = body.error && body.error.code;
-      throw err;
-    }
-    return body;
-  }
-  return payload;
+  return navidromeDispatch(endpoint, query, { timeoutMs: 12000 });
 }
 function navidromeAuthQueryFromConfig(extra) {
   return buildNavidromeAuthQuery(extra || {});
@@ -2025,15 +2036,36 @@ async function handleNavidromeStream(req, res, songId) {
     res.end('Missing song id');
     return;
   }
-  const upstreamUrl = navidromeConfig.server + '/rest/stream?' + buildNavidromeAuthQuery({ id });
+  const upstreamEndpoint = '/rest/stream';
+  const streamQuery = buildNavidromeAuthQuery({ id });
+  const sep = upstreamEndpoint.indexOf('?') >= 0 ? '&' : '?';
+  const upstreamUrl = navidromeConfig.server + upstreamEndpoint + sep + streamQuery;
   const range = req.headers.range || '';
-  const headers = {
+  const baseHeaders = {
     'User-Agent': UA,
     'Accept': '*/*',
   };
-  if (range) headers['Range'] = range;
+  if (range) baseHeaders['Range'] = range;
   try {
-    const upstream = await navidromeFetchWithTimeout(upstreamUrl, navidromeFetchOptions(headers), 30000);
+    const agent = navidromeSelfSignedAgent();
+    const dispatcher = agent ? { dispatcher: agent } : {};
+    const controller = new AbortController();
+    const timer = setTimeout(function(){ controller.abort(); }, 30000);
+    let upstream = null;
+    try {
+      const postHeaders = Object.assign({}, baseHeaders, { 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8' });
+      try {
+        upstream = await fetch(upstreamUrl, Object.assign({ method: 'POST', headers: postHeaders, body: streamQuery, signal: controller.signal }, dispatcher));
+      } catch (e) {
+        upstream = null;
+      }
+      if (!upstream || !upstream.ok || !upstream.body) {
+        if (upstream) { try { upstream.body && upstream.body.cancel && upstream.body.cancel(); } catch (_) {} }
+        upstream = await fetch(upstreamUrl, Object.assign({ method: 'GET', headers: baseHeaders, signal: controller.signal }, dispatcher));
+      }
+    } finally {
+      clearTimeout(timer);
+    }
     if (!upstream.ok || !upstream.body) {
       res.writeHead(upstream.status || 502, { 'Access-Control-Allow-Origin': '*' });
       res.end('Upstream stream failed');
@@ -3970,6 +4002,7 @@ const server = http.createServer(async (req, res) => {
         info.saved = true;
         info.ok = true;
       } catch (e) {
+        console.log('[NavidromeLogin] failed for', username, '@', server, '->', e.message);
         saveNavidromeConfig(prev);
         saveNavidromeConfig({ password: '' });
         sendJSON(res, { provider: 'navidrome', loggedIn: false, error: e.message || 'NAVIDROME_LOGIN_FAILED', message: '登录失败：' + (e.message || '未知错误') }, 400);
@@ -4064,7 +4097,23 @@ const server = http.createServer(async (req, res) => {
       }
       const query = buildNavidromeAuthQuery({ id: coverId, size });
       const coverUrl = navidromeConfig.server + '/rest/getCoverArt' + '?' + query;
-      const upstream = await navidromeFetchWithTimeout(coverUrl, navidromeFetchOptions(), 12000);
+      const agent = navidromeSelfSignedAgent();
+      const dispatcher = agent ? { dispatcher: agent } : {};
+      const controller = new AbortController();
+      const timer = setTimeout(function(){ controller.abort(); }, 12000);
+      let upstream = null;
+      try {
+        const postHeaders = Object.assign({ 'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8', 'User-Agent': UA, 'Accept': 'image/*,*/*;q=0.8' });
+        try {
+          upstream = await fetch(coverUrl, Object.assign({ method: 'POST', headers: postHeaders, body: query, signal: controller.signal }, dispatcher));
+        } catch (e) { upstream = null; }
+        if (!upstream || !upstream.ok || !upstream.body) {
+          if (upstream) { try { upstream.body && upstream.body.cancel && upstream.body.cancel(); } catch (_) {} }
+          upstream = await fetch(coverUrl, Object.assign({ method: 'GET', headers: { 'User-Agent': UA, 'Accept': 'image/*,*/*;q=0.8' }, signal: controller.signal }, dispatcher));
+        }
+      } finally {
+        clearTimeout(timer);
+      }
       if (!upstream.ok || !upstream.body) {
         res.writeHead(upstream.status || 502, { 'Access-Control-Allow-Origin': '*' });
         res.end('Cover fetch failed');
