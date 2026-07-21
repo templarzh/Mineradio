@@ -1,5 +1,15 @@
 # Changelog
 
+## v1.2.0
+
+- 新增 Navidrome / Subsonic 协议登录集成：登录模态新增 `Navidrome` tab，账号信息模态新增 `Navidrome` 切换入口；可保存服务器地址、用户名、密码（明文存 `userData/.navidrome-config`）。
+- 登录面板提供「允许自签证书」开关，开启后通过 undici Agent 走 `rejectUnauthorized: false`，自建 HTTPS Navidrome 服务器可直接连接。
+- 登录后会同步账号状态到右上角账号徽标；后台每 45 秒轮询 `/api/navidrome/login/status` 维持状态。
+- 搜索条新增 `ND` 源切换 tab：登录后可在搜索下拉中单独使用 Navidrome 音乐库搜索，或在 `All` 模式下与网易云/QQ 并排搜索（按相关性合并排序）。
+- 完整播放流：新增 `/api/navidrome/stream` 代理端点，支持 `Range` 寻址和自签证书；服务端为每次请求重新生成 `t/s/u/v/c` 鉴权参数，`audio.src` 直接走代理。
+- 我的歌单：登录后可加载 Navidrome 个人歌单 `getPlaylists`，点击进入 `getPlaylist` 拉取曲目；歌单列表新增 `ND` 徽标和独立分组。
+- 歌词/红心/收藏到歌单在 Navidrome 源上给出明确文案「暂未接入」，不静默失败。
+
 ## v1.1.1
 
 - P0 installer safety fix: installation now defaults to the first available non-C drive from `D:\Mineradio` through `Z:\Mineradio`; it falls back to `C:\Mineradio` only when no D-Z drive exists.

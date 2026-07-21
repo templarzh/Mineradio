@@ -1,5 +1,17 @@
 # Mineradio Project Memory
 
+### 2026-07-21 - v1.2.0 Navidrome 集成
+
+- User requirement: 把 Navidrome / Subsonic 服务器集成进当前的网易云 + QQ 双平台登录中，不需要第三方账号体系；用户自建服务器为主。
+- Files: `server.js`, `public/index.html`, `CHANGELOG.md`, `package.json`, `package-lock.json`.
+- Implementation: Subsonic 协议鉴权用 `t = md5(password + salt)`，每个请求重新生成 `t/s/u/v=1.16.1/c=mineradio`；凭据明文存在 `userData/.navidrome-config`（JSON）。
+- 自签证书支持：`allowSelfSigned: true` 时服务端用 `undici.Agent({ connect: { rejectUnauthorized: false } })`，音频流代理 `/api/navidrome/stream` 也走同一 agent。
+- 范围：登录 + 状态指示 + 搜索 tab（`ND`）+ 完整播放流（含 Range 寻址）+ 我的歌单（`getPlaylists`/`getPlaylist`）；歌词/红心/收藏到歌单暂未接入，给出明确提示。
+- 关键扩展点：`platformMeta/Status/hasAnyPlatformLogin/firstLoggedProvider/providerAvatarSrc/songProviderKey/playbackLoginProvider` 全部支持 `provider === 'navidrome'`。
+- 关键 UI：`#login-provider-navidrome` 登录 tab、`#navidrome-login-panel` 表单（含「允许自签证书」开关 + 测速按钮）、`#user-provider-navidrome` 用户切换 tab、`#search-mode-navidrome` 搜索 tab、`#navidrome-login-status` 状态文本。
+- 关键端点：`/api/navidrome/login`、`/api/navidrome/login/status`、`/api/navidrome/ping`、`/api/navidrome/logout`、`/api/navidrome/search`、`/api/navidrome/song/url`、`/api/navidrome/stream`、`/api/navidrome/cover`、`/api/navidrome/user/playlists`、`/api/navidrome/playlist/tracks`。
+- Do not regress: 不要把 Subsonic 凭据写进 `userCookie`/`qqCookie` 文件体系（结构不同），不要把自签 Agent 应用到 `/api/audio` 通用代理（避免影响网易云/QQ HTTPS），不要让搜索 tab 把 ND 当成默认隐藏 tab（登录后会切换显示）。
+
 ### 2026-06-25 - P0 Installer In-Place Repair Rule
 
 - User requirement: all users must receive the installer/uninstaller safety fix with zero risk to unrelated files.

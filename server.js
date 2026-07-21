@@ -59,6 +59,9 @@ const HOST = process.env.HOST || '0.0.0.0';
 const UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 const COOKIE_FILE = process.env.COOKIE_FILE || path.join(__dirname, '.cookie');
 const QQ_COOKIE_FILE = process.env.QQ_COOKIE_FILE || path.join(__dirname, '.qq-cookie');
+const NAVIDROME_CONFIG_FILE = process.env.NAVIDROME_CONFIG_FILE || path.join(__dirname, '.navidrome-config');
+const NAVIDROME_CLIENT_NAME = 'mineradio';
+const NAVIDROME_API_VERSION = '1.16.1';
 const UPDATE_WORK_DIR = process.env.MINERADIO_UPDATE_DIR || path.join(__dirname, 'updates');
 const UPDATE_DOWNLOAD_DIR = process.env.MINERADIO_UPDATE_DOWNLOAD_DIR || path.join(UPDATE_WORK_DIR, 'downloads');
 const UPDATE_PATCH_BACKUP_DIR = process.env.MINERADIO_PATCH_BACKUP_DIR || path.join(UPDATE_WORK_DIR, 'backups', 'patches');
@@ -240,6 +243,221 @@ catch (e) { qqCookie = ''; }
 function saveQQCookie(c) {
   qqCookie = normalizeCookieHeader(c) || rawCookieFallback(c);
   try { fs.writeFileSync(QQ_COOKIE_FILE, qqCookie); } catch (e) {}
+}
+
+// ---------- Navidrome 凭据持久化 ----------
+let navidromeConfig = { server: '', username: '', password: '', allowSelfSigned: false, nickname: '', userId: '', lastCheckAt: 0, lastError: '' };
+function loadNavidromeConfigFromDisk() {
+  try {
+    if (!fs.existsSync(NAVIDROME_CONFIG_FILE)) return null;
+    const raw = fs.readFileSync(NAVIDROME_CONFIG_FILE, 'utf8');
+    if (!raw.trim()) return null;
+    const obj = JSON.parse(raw);
+    return obj && typeof obj === 'object' ? obj : null;
+  } catch (e) { return null; }
+}
+const _navidromeConfigLoaded = loadNavidromeConfigFromDisk();
+if (_navidromeConfigLoaded) {
+  navidromeConfig = Object.assign({}, navidromeConfig, _navidromeConfigLoaded);
+}
+function saveNavidromeConfig(patch) {
+  navidromeConfig = Object.assign({}, navidromeConfig, patch || {});
+  try {
+    fs.writeFileSync(NAVIDROME_CONFIG_FILE, JSON.stringify(navidromeConfig, null, 2));
+  } catch (e) {}
+}
+function clearNavidromeConfig() {
+  navidromeConfig = { server: '', username: '', password: '', allowSelfSigned: false, nickname: '', userId: '', lastCheckAt: 0, lastError: '' };
+  try { fs.unlinkSync(NAVIDROME_CONFIG_FILE); } catch (e) {}
+}
+function normalizeNavidromeServer(input) {
+  let s = String(input || '').trim();
+  if (!s) return '';
+  s = s.replace(/\/+$/, '');
+  if (!/^https?:\/\//i.test(s)) s = 'http://' + s;
+  return s;
+}
+function hasNavidromeCredentials() {
+  return !!(navidromeConfig.server && navidromeConfig.username && navidromeConfig.password);
+}
+function buildNavidromeAuthQuery(extra, passwordOverride) {
+  const username = String(navidromeConfig.username || '').trim();
+  const password = String(passwordOverride != null ? passwordOverride : navidromeConfig.password || '');
+  const salt = crypto.randomBytes(8).toString('hex');
+  const token = crypto.createHash('md5').update(password + salt).digest('hex');
+  const params = new URLSearchParams();
+  params.set('u', username);
+  params.set('t', token);
+  params.set('s', salt);
+  params.set('v', NAVIDROME_API_VERSION);
+  params.set('c', NAVIDROME_CLIENT_NAME);
+  params.set('f', 'json');
+  if (extra && typeof extra === 'object') {
+    Object.keys(extra).forEach(function(k){
+      const v = extra[k];
+      if (v === undefined || v === null || v === '') return;
+      params.set(k, String(v));
+    });
+  }
+  return params.toString();
+}
+let _navidromeSelfSignedAgent = null;
+function navidromeSelfSignedAgent() {
+  if (!navidromeConfig.allowSelfSigned) return null;
+  if (!_navidromeSelfSignedAgent) {
+    try {
+      const undici = require('undici');
+      _navidromeSelfSignedAgent = new undici.Agent({ connect: { rejectUnauthorized: false } });
+    } catch (e) {
+      _navidromeSelfSignedAgent = false;
+    }
+  }
+  return _navidromeSelfSignedAgent || null;
+}
+function navidromeFetchOptions(extraHeaders) {
+  const headers = Object.assign({
+    'User-Agent': UA,
+    'Accept': 'application/json,application/xml,text/xml;q=0.9,*/*;q=0.8',
+  }, extraHeaders || {});
+  const opts = { headers };
+  const agent = navidromeSelfSignedAgent();
+  if (agent) opts.dispatcher = agent;
+  return opts;
+}
+async function navidromeFetchWithTimeout(url, opts, timeoutMs) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs || 12000);
+  try {
+    return await fetch(url, Object.assign({}, opts || {}, { signal: controller.signal }));
+  } finally {
+    clearTimeout(timer);
+  }
+}
+async function navidromeRequest(endpoint, params, opts) {
+  opts = opts || {};
+  const server = String(navidromeConfig.server || '').trim();
+  if (!server) throw new Error('NAVIDROME_NOT_CONFIGURED');
+  const query = typeof params === 'string' ? params : buildNavidromeAuthQuery(params || {});
+  const sep = endpoint.indexOf('?') >= 0 ? '&' : '?';
+  const url = server + endpoint + sep + query;
+  const fetchOpts = navidromeFetchOptions(opts.body ? { 'Content-Type': 'application/json' } : null);
+  if (opts.body) fetchOpts.body = opts.body;
+  if (opts.method) fetchOpts.method = opts.method;
+  const res = await navidromeFetchWithTimeout(url, fetchOpts, opts.timeoutMs || 12000);
+  if (!res.ok && res.status !== 401) {
+    const text = await res.text().catch(function(){ return ''; });
+    throw new Error('NAVIDROME_HTTP_' + res.status + (text ? ':' + text.slice(0, 200) : ''));
+  }
+  const ct = (res.headers.get && res.headers.get('content-type')) || '';
+  let payload;
+  if (ct.indexOf('application/json') >= 0) {
+    payload = await res.json();
+  } else {
+    const text = await res.text();
+    try { payload = JSON.parse(text); }
+    catch (e) { payload = null; }
+  }
+  if (payload && payload['subsonic-response']) {
+    const body = payload['subsonic-response'];
+    if (body.status === 'failed') {
+      const err = new Error('SUBSONIC_FAILED:' + (body.error && body.error.message ? body.error.message : 'unknown'));
+      err.code = body.error && body.error.code;
+      throw err;
+    }
+    return body;
+  }
+  return payload;
+}
+async function navidromeRequestWithPassword(endpoint, params, password) {
+  const server = String(navidromeConfig.server || '').trim();
+  if (!server) throw new Error('NAVIDROME_NOT_CONFIGURED');
+  const query = buildNavidromeAuthQuery(params || {}, password);
+  const sep = endpoint.indexOf('?') >= 0 ? '&' : '?';
+  const url = server + endpoint + sep + query;
+  const res = await navidromeFetchWithTimeout(url, navidromeFetchOptions(), 12000);
+  if (!res.ok) throw new Error('NAVIDROME_HTTP_' + res.status);
+  const ct = (res.headers.get && res.headers.get('content-type')) || '';
+  let payload;
+  if (ct.indexOf('application/json') >= 0) {
+    payload = await res.json();
+  } else {
+    const text = await res.text();
+    try { payload = JSON.parse(text); } catch (e) { payload = null; }
+  }
+  if (payload && payload['subsonic-response']) {
+    const body = payload['subsonic-response'];
+    if (body.status === 'failed') {
+      const err = new Error('SUBSONIC_FAILED:' + (body.error && body.error.message ? body.error.message : 'unknown'));
+      err.code = body.error && body.error.code;
+      throw err;
+    }
+    return body;
+  }
+  return payload;
+}
+function navidromeAuthQueryFromConfig(extra) {
+  return buildNavidromeAuthQuery(extra || {});
+}
+function navidromeSongFromSubsonic(song) {
+  if (!song || typeof song !== 'object') return null;
+  const id = String(song.id || '').trim();
+  if (!id) return null;
+  const artist = String(song.artist || '').trim();
+  const album = String(song.album || '').trim();
+  const title = String(song.title || song.name || '').trim();
+  const coverId = String(song.coverArt || song.albumId || '').trim();
+  const duration = Math.max(0, Math.round(Number(song.duration) || 0));
+  return {
+    provider: 'navidrome',
+    source: 'navidrome',
+    type: 'navidrome',
+    id: 'navidrome:' + id,
+    navidromeId: id,
+    name: title || ('曲目 ' + id),
+    title: title,
+    artist: artist || '未知艺术家',
+    album: album,
+    cover: coverId ? '/api/navidrome/cover?id=' + encodeURIComponent(coverId) + '&size=160' : '',
+    coverId: coverId,
+    albumId: String(song.albumId || '').trim(),
+    duration: duration,
+    suffix: String(song.suffix || '').trim(),
+    bitRate: Number(song.bitRate) || 0,
+    size: Number(song.size) || 0,
+    contentType: String(song.contentType || '').trim(),
+    year: Number(song.year) || 0,
+    genre: String(song.genre || '').trim(),
+    trackNumber: Number(song.trackNumber) || 0,
+    discNumber: Number(song.discNumber) || 0,
+    starred: !!song.starred,
+    playable: true,
+  };
+}
+async function getNavidromeLoginInfo() {
+  if (!hasNavidromeCredentials()) {
+    return { provider: 'navidrome', loggedIn: false };
+  }
+  try {
+    const body = await navidromeRequest('/rest/getUser', {});
+    const user = body && body.user;
+    if (!user || !user.username) {
+      return { provider: 'navidrome', loggedIn: false, error: 'NAVIDROME_NO_USER' };
+    }
+    return {
+      provider: 'navidrome',
+      loggedIn: true,
+      server: navidromeConfig.server,
+      username: user.username,
+      nickname: user.username,
+      userId: String(user.username || ''),
+      allowSelfSigned: !!navidromeConfig.allowSelfSigned,
+      adminRole: !!user.adminRole,
+      scrobblingEnabled: !!user.scrobblingEnabled,
+      lastCheckAt: Date.now(),
+    };
+  } catch (e) {
+    return { provider: 'navidrome', loggedIn: false, error: e.message || 'NAVIDROME_CHECK_FAILED', server: navidromeConfig.server, username: navidromeConfig.username };
+  }
 }
 
 // ---------- 工具 ----------
@@ -1689,6 +1907,174 @@ async function requireLogin(res) {
     return null;
   }
   return info;
+}
+
+// ---------- 业务: Navidrome Subsonic ----------
+async function handleNavidromeSearch(keywords, limit) {
+  if (!hasNavidromeCredentials()) {
+    return { provider: 'navidrome', loggedIn: false, error: 'NAVIDROME_NOT_CONFIGURED', songs: [] };
+  }
+  const kw = String(keywords || '').trim();
+  if (!kw) return { provider: 'navidrome', loggedIn: true, songs: [] };
+  const lim = Math.max(1, Math.min(60, Number(limit) || 24));
+  try {
+    const body = await navidromeRequest('/rest/search3', {
+      query: kw,
+      songCount: lim,
+      artistCount: 0,
+      albumCount: 0,
+    });
+    const result = (body && body.searchResult3) || (body && body.searchResult) || {};
+    const songs = (result.song || []).map(navidromeSongFromSubsonic).filter(Boolean);
+    return { provider: 'navidrome', loggedIn: true, songs };
+  } catch (e) {
+    return { provider: 'navidrome', loggedIn: false, error: e.message, songs: [] };
+  }
+}
+async function handleNavidromeUserPlaylists() {
+  if (!hasNavidromeCredentials()) {
+    return { provider: 'navidrome', loggedIn: false, error: 'NAVIDROME_NOT_CONFIGURED', playlists: [] };
+  }
+  try {
+    const body = await navidromeRequest('/rest/getPlaylists', { u: navidromeConfig.username });
+    const playlists = ((body && body.playlists && body.playlists.playlist) || [])
+      .map(function(pl){
+        if (!pl || !pl.id) return null;
+        const isMine = String(pl.owner || '').toLowerCase() === String(navidromeConfig.username || '').toLowerCase();
+        return {
+          id: String(pl.id),
+          name: pl.name || ('歌单 ' + pl.id),
+          cover: '',
+          trackCount: Number(pl.songCount) || 0,
+          playCount: Number(pl.playCount) || 0,
+          creator: pl.owner || navidromeConfig.username || '',
+          subscribed: !isMine,
+          specialType: 0,
+          provider: 'navidrome',
+          public: !!pl.public,
+          changedAt: pl.changed ? new Date(pl.changed).getTime() : 0,
+          createdAt: pl.created ? new Date(pl.created).getTime() : 0,
+          comment: pl.comment || '',
+        };
+      })
+      .filter(Boolean);
+    return {
+      provider: 'navidrome',
+      loggedIn: true,
+      username: navidromeConfig.username,
+      server: navidromeConfig.server,
+      playlists,
+    };
+  } catch (e) {
+    return { provider: 'navidrome', loggedIn: false, error: e.message, playlists: [] };
+  }
+}
+async function handleNavidromePlaylistTracks(playlistId) {
+  if (!hasNavidromeCredentials()) {
+    return { provider: 'navidrome', loggedIn: false, error: 'NAVIDROME_NOT_CONFIGURED', tracks: [] };
+  }
+  const id = String(playlistId || '').trim();
+  if (!id) return { provider: 'navidrome', loggedIn: true, error: 'Missing playlist id', tracks: [] };
+  try {
+    const body = await navidromeRequest('/rest/getPlaylist', { id });
+    const playlist = (body && body.playlist) || {};
+    const tracks = (playlist.entry || []).map(navidromeSongFromSubsonic).filter(Boolean);
+    return {
+      provider: 'navidrome',
+      loggedIn: true,
+      playlist: {
+        id: String(playlist.id || id),
+        name: playlist.name || ('歌单 ' + id),
+        cover: '',
+        trackCount: tracks.length,
+        creator: playlist.owner || navidromeConfig.username || '',
+        comment: playlist.comment || '',
+        provider: 'navidrome',
+      },
+      tracks,
+    };
+  } catch (e) {
+    return { provider: 'navidrome', loggedIn: false, error: e.message, tracks: [] };
+  }
+}
+function handleNavidromeSongUrl(songId) {
+  if (!hasNavidromeCredentials()) {
+    return { provider: 'navidrome', url: '', playable: false, error: 'NAVIDROME_NOT_CONFIGURED' };
+  }
+  const id = String(songId || '').trim();
+  if (!id) return { provider: 'navidrome', url: '', playable: false, error: 'MISSING_SONG_ID' };
+  return {
+    provider: 'navidrome',
+    url: '/api/navidrome/stream?id=' + encodeURIComponent(id),
+    playable: true,
+    quality: 'original',
+    level: 'original',
+    bitRate: 0,
+    expiresIn: 60,
+  };
+}
+async function handleNavidromeStream(req, res, songId) {
+  if (!hasNavidromeCredentials()) {
+    res.writeHead(404, { 'Access-Control-Allow-Origin': '*' });
+    res.end('Navidrome not configured');
+    return;
+  }
+  const id = String(songId || '').trim();
+  if (!id) {
+    res.writeHead(400, { 'Access-Control-Allow-Origin': '*' });
+    res.end('Missing song id');
+    return;
+  }
+  const upstreamUrl = navidromeConfig.server + '/rest/stream?' + buildNavidromeAuthQuery({ id });
+  const range = req.headers.range || '';
+  const headers = {
+    'User-Agent': UA,
+    'Accept': '*/*',
+  };
+  if (range) headers['Range'] = range;
+  try {
+    const upstream = await navidromeFetchWithTimeout(upstreamUrl, navidromeFetchOptions(headers), 30000);
+    if (!upstream.ok || !upstream.body) {
+      res.writeHead(upstream.status || 502, { 'Access-Control-Allow-Origin': '*' });
+      res.end('Upstream stream failed');
+      return;
+    }
+    const ct = upstream.headers.get('content-type') || 'application/octet-stream';
+    const cl = upstream.headers.get('content-length');
+    const cr = upstream.headers.get('content-range');
+    const outHeaders = {
+      'Content-Type': ct,
+      'Access-Control-Allow-Origin': '*',
+      'Accept-Ranges': 'bytes',
+      'Cache-Control': 'no-store',
+    };
+    if (cl) outHeaders['Content-Length'] = cl;
+    if (cr) outHeaders['Content-Range'] = cr;
+    res.writeHead(upstream.status, outHeaders);
+    const reader = upstream.body.getReader();
+    const pump = async function(){
+      try {
+        while (true) {
+          const chunk = await reader.read();
+          if (chunk.done) { res.end(); return; }
+          if (!res.write(chunk.value)) {
+            await new Promise(function(r){ res.once('drain', r); });
+          }
+        }
+      } catch (e) {
+        try { res.destroy(e); } catch (_) {}
+      }
+    };
+    pump();
+  } catch (e) {
+    console.error('[NavidromeStream]', e);
+    if (!res.headersSent) {
+      res.writeHead(500, { 'Access-Control-Allow-Origin': '*' });
+      res.end('Stream proxy failed');
+    } else {
+      try { res.destroy(e); } catch (_) {}
+    }
+  }
 }
 
 // ---------- 业务: 搜索 ----------
@@ -3555,6 +3941,188 @@ const server = http.createServer(async (req, res) => {
   if (pn === '/api/qq/logout') {
     saveQQCookie('');
     sendJSON(res, { provider: 'qq', ok: true, loggedIn: false });
+    return;
+  }
+
+  // ---------- Navidrome: 登录 / 状态 / 登出 ----------
+  if (pn === '/api/navidrome/login') {
+    try {
+      const body = req.method === 'POST' ? await readRequestBody(req) : {};
+      const server = normalizeNavidromeServer(body.server || url.searchParams.get('server'));
+      const username = String(body.username || url.searchParams.get('username') || '').trim();
+      const password = String(body.password || url.searchParams.get('password') || '');
+      const allowSelfSigned = !!(body.allowSelfSigned != null
+        ? body.allowSelfSigned
+        : (url.searchParams.get('allowSelfSigned') === '1' || url.searchParams.get('allowSelfSigned') === 'true'));
+      if (!server || !username || !password) {
+        sendJSON(res, { provider: 'navidrome', loggedIn: false, error: 'NAVIDROME_MISSING_FIELDS', message: '需要服务器、用户名和密码' }, 400);
+        return;
+      }
+      const prev = { server: navidromeConfig.server, username: navidromeConfig.username, allowSelfSigned: navidromeConfig.allowSelfSigned };
+      saveNavidromeConfig({ server, username, password, allowSelfSigned });
+      let info;
+      try {
+        const body2 = await navidromeRequestWithPassword('/rest/getUser', {}, password);
+        const user = body2 && body2.user;
+        if (!user || !user.username) throw new Error('NAVIDROME_NO_USER');
+        saveNavidromeConfig({ nickname: user.username, userId: String(user.username || ''), lastCheckAt: Date.now(), lastError: '' });
+        info = await getNavidromeLoginInfo();
+        info.saved = true;
+        info.ok = true;
+      } catch (e) {
+        saveNavidromeConfig(prev);
+        saveNavidromeConfig({ password: '' });
+        sendJSON(res, { provider: 'navidrome', loggedIn: false, error: e.message || 'NAVIDROME_LOGIN_FAILED', message: '登录失败：' + (e.message || '未知错误') }, 400);
+        return;
+      }
+      sendJSON(res, info);
+    } catch (err) {
+      console.error('[NavidromeLogin]', err);
+      sendJSON(res, { provider: 'navidrome', loggedIn: false, error: err.message }, 500);
+    }
+    return;
+  }
+
+  if (pn === '/api/navidrome/login/status') {
+    try {
+      const info = await getNavidromeLoginInfo();
+      sendJSON(res, info);
+    } catch (err) {
+      console.error('[NavidromeLoginStatus]', err);
+      sendJSON(res, { provider: 'navidrome', loggedIn: false, error: err.message }, 500);
+    }
+    return;
+  }
+
+  if (pn === '/api/navidrome/ping') {
+    try {
+      if (!hasNavidromeCredentials()) {
+        sendJSON(res, { provider: 'navidrome', ok: false, loggedIn: false, error: 'NAVIDROME_NOT_CONFIGURED' }, 400);
+        return;
+      }
+      const body = await navidromeRequest('/rest/ping', {});
+      sendJSON(res, { provider: 'navidrome', ok: true, loggedIn: true, status: body && body.status });
+    } catch (err) {
+      sendJSON(res, { provider: 'navidrome', ok: false, loggedIn: false, error: err.message }, 500);
+    }
+    return;
+  }
+
+  if (pn === '/api/navidrome/logout') {
+    clearNavidromeConfig();
+    _navidromeSelfSignedAgent = null;
+    sendJSON(res, { provider: 'navidrome', ok: true, loggedIn: false });
+    return;
+  }
+
+  // ---------- Navidrome: 搜索 ----------
+  if (pn === '/api/navidrome/search') {
+    try {
+      const keywords = url.searchParams.get('keywords') || url.searchParams.get('q') || '';
+      const limit = parseInt(url.searchParams.get('limit') || '24', 10) || 24;
+      const data = await handleNavidromeSearch(keywords, limit);
+      sendJSON(res, data);
+    } catch (err) {
+      console.error('[NavidromeSearch]', err);
+      sendJSON(res, { provider: 'navidrome', loggedIn: false, error: err.message, songs: [] }, 500);
+    }
+    return;
+  }
+
+  // ---------- Navidrome: 播放 URL (Subsonic stream 带签) ----------
+  if (pn === '/api/navidrome/song/url') {
+    try {
+      const id = url.searchParams.get('id') || url.searchParams.get('navidromeId') || '';
+      const data = handleNavidromeSongUrl(id);
+      sendJSON(res, data);
+    } catch (err) {
+      sendJSON(res, { provider: 'navidrome', url: '', playable: false, error: err.message }, 500);
+    }
+    return;
+  }
+
+  // ---------- Navidrome: 音频流代理 (支持 Range + 自签证书) ----------
+  if (pn === '/api/navidrome/stream') {
+    await handleNavidromeStream(req, res, url.searchParams.get('id') || '');
+    return;
+  }
+
+  // ---------- Navidrome: 封面代理 ----------
+  if (pn === '/api/navidrome/cover') {
+    try {
+      if (!hasNavidromeCredentials()) {
+        res.writeHead(404, { 'Access-Control-Allow-Origin': '*' });
+        res.end('Navidrome not configured');
+        return;
+      }
+      const coverId = url.searchParams.get('id') || '';
+      const size = Math.max(32, Math.min(1000, parseInt(url.searchParams.get('size') || '160', 10) || 160));
+      if (!coverId) {
+        res.writeHead(400, { 'Access-Control-Allow-Origin': '*' });
+        res.end('Missing cover id');
+        return;
+      }
+      const query = buildNavidromeAuthQuery({ id: coverId, size });
+      const coverUrl = navidromeConfig.server + '/rest/getCoverArt' + '?' + query;
+      const upstream = await navidromeFetchWithTimeout(coverUrl, navidromeFetchOptions(), 12000);
+      if (!upstream.ok || !upstream.body) {
+        res.writeHead(upstream.status || 502, { 'Access-Control-Allow-Origin': '*' });
+        res.end('Cover fetch failed');
+        return;
+      }
+      const ct = upstream.headers.get('content-type') || 'image/jpeg';
+      const cl = upstream.headers.get('content-length');
+      const headers = {
+        'Content-Type': ct,
+        'Access-Control-Allow-Origin': '*',
+        'Cache-Control': 'public, max-age=300',
+      };
+      if (cl) headers['Content-Length'] = cl;
+      res.writeHead(upstream.status, headers);
+      const reader = upstream.body.getReader();
+      const pump = async function(){
+        try {
+          while (true) {
+            const chunk = await reader.read();
+            if (chunk.done) { res.end(); return; }
+            if (!res.write(chunk.value)) {
+              await new Promise(function(r){ res.once('drain', r); });
+            }
+          }
+        } catch (e) {
+          try { res.destroy(e); } catch (_) {}
+        }
+      };
+      pump();
+    } catch (err) {
+      console.error('[NavidromeCover]', err);
+      res.writeHead(500, { 'Access-Control-Allow-Origin': '*' });
+      res.end('Cover proxy failed');
+    }
+    return;
+  }
+
+  // ---------- Navidrome: 我的歌单 / 单歌单 ----------
+  if (pn === '/api/navidrome/user/playlists') {
+    try {
+      const data = await handleNavidromeUserPlaylists();
+      sendJSON(res, data);
+    } catch (err) {
+      console.error('[NavidromeUserPlaylists]', err);
+      sendJSON(res, { provider: 'navidrome', loggedIn: false, error: err.message, playlists: [] }, 500);
+    }
+    return;
+  }
+
+  if (pn === '/api/navidrome/playlist/tracks') {
+    try {
+      const id = url.searchParams.get('id') || '';
+      const data = await handleNavidromePlaylistTracks(id);
+      sendJSON(res, data);
+    } catch (err) {
+      console.error('[NavidromePlaylistTracks]', err);
+      sendJSON(res, { provider: 'navidrome', loggedIn: false, error: err.message, tracks: [] }, 500);
+    }
     return;
   }
 

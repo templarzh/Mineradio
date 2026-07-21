@@ -21,7 +21,7 @@ try {
 html,body{font-family:var(--font-sans);background:#000;color:#fff;overflow:hidden;height:100vh;width:100vw;user-select:none;-webkit-font-smoothing:antialiased}
 body.cursor-hidden,body.cursor-hidden *{cursor:none!important}
 html.desktop-shell-root,html.desktop-shell-root body{background:transparent}
-:root{--font-sans:"Noto Sans SC","PingFang SC","HarmonyOS Sans SC","Alibaba PuHuiTi","Inter",-apple-system,BlinkMacSystemFont,system-ui,sans-serif;--font-mono:"JetBrains Mono","Geist Mono","SF Mono",ui-monospace,monospace;--fc-bg:#08090B;--fc-paper:#0E1014;--fc-ink:#E8ECEF;--fc-ink-2:#D2D7DC;--fc-muted:#8A9099;--fc-hair:#1A1D22;--fc-hair-2:#262A31;--fc-accent:#00F5D4;--fc-accent-hov:#00E0BE;--fc-accent-rgb:0,245,212;--fc-blue:#2442ff;--fc-warm:#f8f4ee;--chill-ink:#030608;--chill-deep:#061116;--chill-cyan:#8fe9ff;--chill-blue:#73a7ff;--chill-mint:#9cffdf;--chill-soft:rgba(214,248,255,.9);--champagne:#f4d28a;--champagne-deep:#9a6f2c;--home-accent:#00f5d4;--home-accent-rgb:0,245,212;--visual-tint:#9db8cf;--source-netease:#d95b67;--source-qq:#00F5D4;--source-local:#9db8cf}
+:root{--font-sans:"Noto Sans SC","PingFang SC","HarmonyOS Sans SC","Alibaba PuHuiTi","Inter",-apple-system,BlinkMacSystemFont,system-ui,sans-serif;--font-mono:"JetBrains Mono","Geist Mono","SF Mono",ui-monospace,monospace;--fc-bg:#08090B;--fc-paper:#0E1014;--fc-ink:#E8ECEF;--fc-ink-2:#D2D7DC;--fc-muted:#8A9099;--fc-hair:#1A1D22;--fc-hair-2:#262A31;--fc-accent:#00F5D4;--fc-accent-hov:#00E0BE;--fc-accent-rgb:0,245,212;--fc-blue:#2442ff;--fc-warm:#f8f4ee;--chill-ink:#030608;--chill-deep:#061116;--chill-cyan:#8fe9ff;--chill-blue:#73a7ff;--chill-mint:#9cffdf;--chill-soft:rgba(214,248,255,.9);--champagne:#f4d28a;--champagne-deep:#9a6f2c;--home-accent:#00f5d4;--home-accent-rgb:0,245,212;--visual-tint:#9db8cf;--source-netease:#d95b67;--source-qq:#00F5D4;--source-local:#9db8cf;--source-navidrome:#66aaff}
 :root{--glass-bg:linear-gradient(112deg,rgba(72,74,76,.62),rgba(24,27,30,.70) 48%,rgba(8,12,14,.74));--glass-bg-focus:linear-gradient(112deg,rgba(88,91,92,.68),rgba(28,32,35,.76) 50%,rgba(8,13,15,.82));--glass-border:rgba(0,245,212,.30);--glass-border-soft:rgba(255,255,255,.095);--glass-shadow:0 22px 64px rgba(0,0,0,.30),0 0 34px rgba(0,245,212,.052),inset 0 1px 0 rgba(255,255,255,.16),inset 0 -24px 58px rgba(0,0,0,.16);--glass-shadow-focus:0 24px 72px rgba(0,0,0,.34),0 0 0 1px rgba(0,245,212,.13),0 0 42px rgba(0,245,212,.075),inset 0 1px 0 rgba(255,255,255,.20)}
 :root{--saved-panel-glass-bg:rgba(0,0,0,.10);--saved-panel-glass-filter:blur(12px) saturate(1.8) brightness(1.16);--saved-panel-glass-svg-filter:url(#mineradio-control-glass-filter) saturate(1);--saved-panel-glass-shadow:inset 0 0 2px 1px rgba(255,255,255,.35),inset 0 0 10px 4px rgba(255,255,255,.15),0 4px 16px rgba(17,17,26,.05),0 8px 24px rgba(17,17,26,.05),0 16px 56px rgba(17,17,26,.05),inset 0 4px 16px rgba(17,17,26,.05),inset 0 8px 24px rgba(17,17,26,.05),inset 0 16px 56px rgba(17,17,26,.05);--saved-panel-glass-radius:50px;--saved-button-glass-bg:rgba(0,0,0,.10);--saved-button-glass-filter:blur(12px) saturate(1.8) brightness(1.16);--saved-button-glass-svg-filter:url(#mineradio-control-glass-filter) saturate(1);--saved-button-glass-shadow:inset 0 0 2px 1px rgba(255,255,255,.34),inset 0 0 10px 4px rgba(255,255,255,.13),0 10px 30px rgba(0,0,0,.18);--saved-button-glass-hover-bg:rgba(255,255,255,.055);--saved-button-glass-hover-shadow:inset 0 0 2px 1px rgba(255,255,255,.42),inset 0 0 12px 5px rgba(255,255,255,.17),0 12px 34px rgba(0,0,0,.22),0 0 18px rgba(255,255,255,.06)}
 :root{--home-icon-color:#f4d28a;--home-icon-rgb:244,210,138;--visual-icon-color:#7fd8ff;--visual-icon-rgb:127,216,255}
@@ -196,9 +196,11 @@ body.empty-home-active.diy-mode #search-area:not(.has-results) #search-mode-tabs
 .tag-source{display:inline-flex;align-items:center;height:16px;padding:0 6px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.045);font-size:8.5px;font-weight:800;letter-spacing:.55px;line-height:1;flex-shrink:0}
 .tag-source.netease{color:#ffd8dd;border-color:rgba(217,91,103,.30);background:rgba(217,91,103,.075)}
 .tag-source.qq{color:#f0ffc8;border-color:rgba(191,214,107,.30);background:rgba(191,214,107,.075)}
+.tag-source.navidrome{color:#cfe7ff;border-color:rgba(102,170,255,.32);background:rgba(102,170,255,.085)}
 .tag-source.local{color:#d9f7ff;border-color:rgba(120,210,255,.30);background:rgba(120,210,255,.075)}
 .search-result.qq-source:hover{background:rgba(191,214,107,.052)}
 .search-result.netease-source:hover{background:rgba(217,91,103,.045)}
+.search-result.navidrome-source:hover{background:rgba(102,170,255,.05)}
 .podcast-result-head{display:flex;align-items:center;gap:10px;padding:11px 13px 9px;border-bottom:1px solid rgba(255,255,255,.04);background:rgba(255,255,255,.025)}
 .podcast-result-head img{width:40px;height:40px;border-radius:7px;object-fit:cover;background:rgba(255,255,255,.05);flex-shrink:0}
 .podcast-back-btn{width:28px;height:28px;border-radius:50%;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.045);color:rgba(255,255,255,.66);cursor:pointer;font-family:inherit;font-size:18px;line-height:1;display:flex;align-items:center;justify-content:center;transition:all .2s}
@@ -454,7 +456,9 @@ body.desktop-shell.empty-home-active.controls-visible #empty-home{bottom:126px}
 .account-source-dot{width:7px;height:7px;border-radius:50%;background:var(--source-local);box-shadow:0 0 12px currentColor;flex-shrink:0}
 .account-source-dot.netease{background:var(--source-netease);color:var(--source-netease)}
 .account-source-dot.qq{background:var(--source-qq);color:var(--source-qq)}
+.account-source-dot.navidrome{background:var(--source-navidrome);color:var(--source-navidrome)}
 .top-account-pill{height:44px;min-width:0;display:flex;align-items:center;gap:8px;padding:0 14px 0 4px;border-radius:24px;border:1px solid rgba(244,210,138,.52);background:rgba(244,210,138,.07);box-shadow:0 0 0 1px rgba(244,210,138,.08),0 14px 42px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.08);transition:background .22s,border-color .22s,box-shadow .22s,transform .22s}
+.top-account-pill.navidrome{border-color:rgba(120,180,255,.55);background:rgba(120,180,255,.09);box-shadow:0 0 0 1px rgba(120,180,255,.10),0 14px 42px rgba(0,0,0,.28),inset 0 1px 0 rgba(255,255,255,.08)}
 #user-btn.multi-account:hover .top-account-pill{background:rgba(244,210,138,.10);border-color:rgba(244,210,138,.62);box-shadow:0 0 0 1px rgba(244,210,138,.10),0 16px 44px rgba(0,0,0,.32),inset 0 1px 0 rgba(255,255,255,.10)}
 .top-account-pill img{width:34px;height:34px;border-radius:50%;object-fit:cover;background:rgba(255,255,255,.08);flex-shrink:0}
 .top-account-name{max-width:96px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px;font-weight:650;color:rgba(255,255,255,.92)}
@@ -803,6 +807,7 @@ body.login-guide-active #login-guide-canvas{opacity:1}
 .login-platform-tabs button.active,.user-platform-tabs button.active{color:#fff;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),0 10px 26px rgba(0,0,0,.20)}
 .login-platform-tabs button.netease.active,.user-platform-tabs button.netease.active{background:rgba(217,91,103,.16);color:#ffd7dc}
 .login-platform-tabs button.qq.active,.user-platform-tabs button.qq.active{background:rgba(191,214,107,.16);color:#f3ffd1}
+.login-platform-tabs button.navidrome.active,.user-platform-tabs button.navidrome.active{background:rgba(102,170,255,.18);color:#d5e7ff;box-shadow:inset 0 0 0 1px rgba(102,170,255,.30),0 10px 26px rgba(0,0,0,.20)}
 .user-platform-tabs button.both.active{background:rgba(244,210,138,.14);color:#fff0bf}
 .qr-shell{position:relative;width:200px;height:200px;margin:0 auto 16px;border-radius:16px}
 #qr-img{width:200px;height:200px;background:#fff;border-radius:14px;margin:0 auto 16px;display:block;padding:10px;box-shadow:0 16px 42px rgba(0,0,0,.32),0 0 0 1px rgba(244,210,138,.18)}
@@ -834,6 +839,32 @@ body.login-guide-active #login-guide-canvas{opacity:1}
 .account-provider-chip{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 9px;margin-bottom:10px;border-radius:999px;border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.035);font-size:10.5px;letter-spacing:.5px;color:rgba(255,255,255,.58)}
 .account-provider-chip.netease{border-color:rgba(217,91,103,.26);color:#ffd7dc;background:rgba(217,91,103,.08)}
 .account-provider-chip.qq{border-color:rgba(191,214,107,.26);color:#f3ffd1;background:rgba(191,214,107,.08)}
+.account-provider-chip.navidrome{border-color:rgba(102,170,255,.30);color:#d5e7ff;background:rgba(102,170,255,.10)}
+.navidrome-login-panel{display:none;margin:0 auto 12px;padding:14px 14px 12px;border-radius:14px;border:1px solid rgba(102,170,255,.22);background:rgba(102,170,255,.045);text-align:left}
+.navidrome-login-panel.show{display:block}
+.navidrome-login-panel .navidrome-field{display:flex;flex-direction:column;gap:5px;margin-bottom:9px}
+.navidrome-login-panel .navidrome-field label{font-size:10.5px;color:rgba(255,255,255,.46);letter-spacing:.45px;font-weight:700}
+.navidrome-login-panel .navidrome-field input{height:34px;border:1px solid rgba(255,255,255,.08);border-radius:9px;background:rgba(0,0,0,.22);color:rgba(255,255,255,.86);padding:0 11px;font-family:inherit;font-size:12px;outline:none;letter-spacing:.2px;transition:border-color .2s,box-shadow .2s}
+.navidrome-login-panel .navidrome-field input:focus{border-color:rgba(102,170,255,.50);box-shadow:0 0 0 1px rgba(102,170,255,.12)}
+.navidrome-login-panel .navidrome-field input::placeholder{color:rgba(255,255,255,.28)}
+.navidrome-toggle-row{display:flex;align-items:center;gap:9px;margin-top:6px;padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.025);cursor:pointer;user-select:none;transition:border-color .2s,background .2s}
+.navidrome-toggle-row:hover{border-color:rgba(102,170,255,.26);background:rgba(102,170,255,.045)}
+.navidrome-toggle-row .navidrome-toggle-box{width:30px;height:18px;border-radius:999px;background:rgba(255,255,255,.10);position:relative;transition:background .2s;flex-shrink:0}
+.navidrome-toggle-row .navidrome-toggle-box::after{content:"";position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.30);transition:transform .2s}
+.navidrome-toggle-row.on .navidrome-toggle-box{background:rgba(102,170,255,.65)}
+.navidrome-toggle-row.on .navidrome-toggle-box::after{transform:translateX(12px)}
+.navidrome-toggle-row .navidrome-toggle-label{font-size:11.5px;color:rgba(255,255,255,.66);line-height:1.45;flex:1;min-width:0}
+.navidrome-toggle-row .navidrome-toggle-label b{color:rgba(255,255,255,.86);font-weight:700;letter-spacing:.3px}
+.navidrome-login-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px}
+.navidrome-login-actions .modal-btn{padding:8px 14px;white-space:nowrap;font-size:12px}
+.navidrome-login-actions .modal-btn.primary{background:rgba(102,170,255,.18);border-color:rgba(102,170,255,.50);color:#e7f1ff}
+.navidrome-login-actions .modal-btn.primary:hover{background:rgba(102,170,255,.28);border-color:rgba(102,170,255,.72)}
+.navidrome-login-actions .modal-btn:disabled{opacity:.55;cursor:wait}
+.navidrome-login-note{font-size:10.5px;line-height:1.5;color:rgba(255,255,255,.34);margin-top:8px}
+#navidrome-login-status{font-size:11.5px;color:rgba(255,255,255,.56);min-height:16px;margin-top:6px;letter-spacing:.3px}
+#navidrome-login-status.scan{color:#7ee2a8}
+#navidrome-login-status.fail{color:#f08080}
+#navidrome-login-status.preview{color:rgba(102,170,255,.86)}
 .account-modal-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
 .account-modal-actions .modal-btn{padding:8px 10px}
 .account-hint{margin-top:10px;font-size:11px;line-height:1.45;color:rgba(255,255,255,.38)}
@@ -1911,6 +1942,7 @@ html.control-glass-svg-ok #visual-guide-btn:hover{
       <button id="search-mode-song" class="active" type="button" onclick="setSearchMode('song')" aria-selected="true">All</button>
       <button id="search-mode-netease" type="button" onclick="setSearchMode('netease')" aria-selected="false">NE</button>
       <button id="search-mode-qq" type="button" onclick="setSearchMode('qq')" aria-selected="false">QQ</button>
+      <button id="search-mode-navidrome" type="button" onclick="setSearchMode('navidrome')" aria-selected="false">ND</button>
       <button id="search-mode-podcast" type="button" onclick="setSearchMode('podcast')" aria-selected="false">Podcast</button>
     </div>
     <div id="search-results"></div>
@@ -2470,6 +2502,7 @@ html.control-glass-svg-ok #visual-guide-btn:hover{
     <div class="login-platform-tabs" id="login-platform-tabs">
       <button id="login-provider-netease" class="netease active" type="button" onclick="setLoginProvider('netease')">网易云</button>
       <button id="login-provider-qq" class="qq" type="button" onclick="setLoginProvider('qq')">QQ 音乐</button>
+      <button id="login-provider-navidrome" class="navidrome" type="button" onclick="setLoginProvider('navidrome')">Navidrome</button>
     </div>
     <div class="login-intro">
       <div class="login-intro-kicker">Mineradio</div>
@@ -2489,6 +2522,30 @@ html.control-glass-svg-ok #visual-guide-btn:hover{
         <div class="qq-cookie-note">从 y.qq.com 的登录会话导入。</div>
         <button id="qq-cookie-save-btn" class="modal-btn primary" type="button" onclick="submitQQCookieLogin()">保存</button>
       </div>
+    </div>
+    <div id="navidrome-login-panel" class="navidrome-login-panel">
+      <div class="navidrome-field">
+        <label for="navidrome-server-input">服务器地址</label>
+        <input id="navidrome-server-input" type="text" autocomplete="off" spellcheck="false" placeholder="http://192.168.1.10:4533">
+      </div>
+      <div class="navidrome-field">
+        <label for="navidrome-username-input">用户名</label>
+        <input id="navidrome-username-input" type="text" autocomplete="off" spellcheck="false" placeholder="Navidrome 用户名">
+      </div>
+      <div class="navidrome-field">
+        <label for="navidrome-password-input">密码</label>
+        <input id="navidrome-password-input" type="password" autocomplete="off" placeholder="Navidrome 登录密码">
+      </div>
+      <div id="navidrome-selfsigned-row" class="navidrome-toggle-row" role="switch" tabindex="0" onclick="toggleNavidromeSelfSignedRow()" onkeydown="if(event.key===' '||event.key==='Enter'){event.preventDefault();toggleNavidromeSelfSignedRow();}">
+        <span class="navidrome-toggle-box" aria-hidden="true"></span>
+        <div class="navidrome-toggle-label"><b>允许自签证书</b> · 自建 HTTPS 服务器没有正式 CA 时勾选</div>
+      </div>
+      <div id="navidrome-login-actions" class="navidrome-login-actions">
+        <button id="navidrome-ping-btn" class="modal-btn" type="button" onclick="pingNavidrome()">测速</button>
+        <button id="navidrome-save-btn" class="modal-btn primary" type="button" onclick="submitNavidromeLogin()">保存并连接</button>
+      </div>
+      <div id="navidrome-login-status" class="preview">填写服务器、用户名和密码后保存即可连接。</div>
+      <div class="navidrome-login-note">Navidrome / Subsonic 协议的凭据仅保存在本机 userData 目录的 <b>.navidrome-config</b> 文件中。</div>
     </div>
     <div class="btn-row">
       <button class="modal-btn" onclick="closeLoginModal()">取消</button>
@@ -2511,13 +2568,15 @@ html.control-glass-svg-ok #visual-guide-btn:hover{
     <div class="user-platform-tabs" id="user-platform-tabs">
       <button id="user-provider-netease" class="netease active" type="button" onclick="setActiveAccountProvider('netease')">网易云</button>
       <button id="user-provider-qq" class="qq" type="button" onclick="setActiveAccountProvider('qq')">QQ 音乐</button>
+      <button id="user-provider-navidrome" class="navidrome" type="button" onclick="setActiveAccountProvider('navidrome')">Navidrome</button>
       <button id="user-provider-both" class="both" type="button" onclick="enableDualAccountView()">我两个都要</button>
     </div>
     <div class="account-modal-actions">
       <button id="account-add-netease" class="modal-btn" onclick="openProviderLogin('netease')">补登网易云</button>
       <button id="account-add-qq" class="modal-btn" onclick="openProviderLogin('qq')">补登 QQ 音乐</button>
+      <button id="account-add-navidrome" class="modal-btn" onclick="openProviderLogin('navidrome')">补登 Navidrome</button>
     </div>
-    <div id="account-hint" class="account-hint">QQ 音乐真实登录暂未接入，当前先预览双平台账号交互。</div>
+    <div id="account-hint" class="account-hint">Navidrome 登录后可启用本地音乐服务器搜索、播放和歌单。</div>
     <div class="btn-row">
       <button class="modal-btn" onclick="closeUserModal()">关闭</button>
       <button id="account-logout-btn" class="modal-btn primary" onclick="logoutActiveAccount()">退出当前平台</button>
@@ -2696,14 +2755,19 @@ var playlist = [], playQueue = [], currentIdx = -1, playing = false, playToggleB
 var searchMode = 'song', podcastResults = [], podcastPrograms = [], podcastCurrentRadio = null;
 var loginStatus = { loggedIn: false, vipType: 0, vipLevel: 'none', isVip: false, isSvip: false, vipLabel: '无VIP' };
 var qqLoginStatus = { provider: 'qq', loggedIn: false, preview: false, nickname: 'QQ 音乐', userId: '', avatar: '', vipType: 0 };
+var navidromeLoginStatus = { provider: 'navidrome', loggedIn: false, server: '', username: '', nickname: '', userId: '', allowSelfSigned: false, adminRole: false, lastError: '' };
 var qqLoginAutoRefreshTimer = null;
 var qqLoginWasLoggedIn = false;
+var navidromeLoginAutoRefreshTimer = null;
+var navidromeLoginWasLoggedIn = false;
+var navidromeLoginBusy = false;
 var loginProvider = 'netease';
 var activeAccountProvider = 'netease';
 var dualAccountMode = false;
 var qqCookieBusy = false;
 var neteaseWebLoginBusy = false;
 var qqWebLoginBusy = false;
+var navidromeSelfSignedBusy = false;
 var qqManualCookieOpen = false;
 var loginStatusChecked = false, loginStatusCheckFailed = false;
 var qrPollTimer = null, qrKey = null;
@@ -13022,10 +13086,11 @@ function makeShelfManager() {
     if (hasAnyPlatformLogin() && (userPlaylists.length || myPodcastCollections.length)) {
       var source = activePlaylists();
       var items = source.map(function(pl){
-        var provider = pl.provider === 'qq' ? 'qq' : 'netease';
-        var sourceLabel = provider === 'qq' ? 'QQ' : 'NE';
+        var provider = pl.provider === 'qq' ? 'qq' : (pl.provider === 'navidrome' ? 'navidrome' : 'netease');
+        var sourceLabel = provider === 'qq' ? 'QQ' : (provider === 'navidrome' ? 'ND' : 'NE');
+        var playlistId = provider === 'qq' ? ('qq:' + pl.id) : (provider === 'navidrome' ? ('navidrome:' + pl.id) : pl.id);
         return { type:'playlist', title: pl.name, sub:sourceLabel + ' · ' + (pl.trackCount||0)+' 首 · 播放 '+compactCount(pl.playCount||0),
-          cover: pl.cover || '', tag: pl.subscribed ? '收藏歌单' : '我的歌单', playlistId: (provider === 'qq' ? 'qq:' : '') + pl.id, provider: provider };
+          cover: pl.cover || '', tag: pl.subscribed ? '收藏歌单' : '我的歌单', playlistId: playlistId, provider: provider };
       });
       if (shelfShowsPodcasts() && (shelfPane === 'mine' || shelfMergesCollections()) && myPodcastCollections.length) {
         myPodcastCollections.forEach(function(pc){
@@ -14412,6 +14477,7 @@ function makeContentListManager() {
       }
       var podcastCollectionKey = String(playlistId || '').indexOf('podcast:') === 0 ? String(playlistId).slice(8) : '';
       var qqPlaylistId = String(playlistId || '').indexOf('qq:') === 0 ? String(playlistId).slice(3) : '';
+      var ndPlaylistKey = String(playlistId || '').indexOf('navidrome:') === 0 ? String(playlistId).slice('navidrome:'.length) : '';
       contentKind = podcastCollectionKey ? 'podcast' : 'playlist';
       // 拉取歌单/播客集合
       var r = null;
@@ -14420,7 +14486,9 @@ function makeContentListManager() {
           ? await apiJson('/api/podcast/my/items?key=' + encodeURIComponent(podcastCollectionKey) + '&limit=36')
           : (qqPlaylistId
             ? await apiJson('/api/qq/playlist/tracks?id=' + encodeURIComponent(qqPlaylistId))
-            : await apiJson('/api/playlist/tracks?id=' + encodeURIComponent(playlistId)));
+            : (ndPlaylistKey
+              ? await apiJson('/api/navidrome/playlist/tracks?id=' + encodeURIComponent(ndPlaylistKey))
+              : await apiJson('/api/playlist/tracks?id=' + encodeURIComponent(playlistId))));
       } catch (e) {
         if (!open || token !== requestToken) return;
         console.warn('[ShelfContentLoadApi]', playlistId, e);
@@ -15271,7 +15339,13 @@ function coverProxySrc(url, cacheBust) {
   return '/api/cover?url=' + encodeURIComponent(url) + (cacheBust ? '&v=' + Date.now() : '');
 }
 function coverUrlWithSize(url, size) {
-  if (!url || isInlineCoverSrc(url) || !/^https?:\/\//i.test(url)) return url || '';
+  if (!url || isInlineCoverSrc(url)) return url || '';
+  if (/^\/api\/navidrome\/cover(\?|$)/i.test(url)) {
+    if (!size) return url;
+    if (/[?&]size=\d+/i.test(url)) return url.replace(/([?&])size=\d+/i, '$1size=' + size);
+    return url + (url.indexOf('?') >= 0 ? '&' : '?') + 'size=' + size;
+  }
+  if (!/^https?:\/\//i.test(url)) return url || '';
   if (!size) return url;
   var param = 'param=' + size + 'y' + size;
   if (/[?&]param=\d+y\d+/i.test(url)) return url.replace(/([?&])param=\d+y\d+/i, '$1' + param);
@@ -16338,7 +16412,8 @@ function songDurationLabel(song) {
 }
 function songSourceLabel(song) {
   if (!song) return '未知';
-  if (song.provider === 'qq' || song.source === 'qq' || song.type === 'qq') return 'QQ 音乐';
+  if (songProviderKey(song) === 'qq') return 'QQ 音乐';
+  if (songProviderKey(song) === 'navidrome') return 'Navidrome';
   if (songProviderKey(song) === 'local') return '本地文件';
   if (song.type === 'podcast' || song.source === 'podcast') return '网易云播客';
   return '网易云音乐';
@@ -17009,7 +17084,10 @@ function refreshSearchResultActionStates() {
 }
 async function toggleLikeSong(song) {
   if (!isCloudSong(song)) {
-    showToast(songProviderKey(song) === 'qq' ? 'QQ 音乐红心同步待登录接口接入' : '本地文件暂不支持红心同步');
+    var key = songProviderKey(song);
+    if (key === 'qq') showToast('QQ 音乐红心同步待登录接口接入');
+    else if (key === 'navidrome') showToast('Navidrome 红心同步暂未接入');
+    else showToast('本地文件暂不支持红心同步');
     return;
   }
   if (!ensureLoggedInForAction()) return;
@@ -17042,7 +17120,10 @@ function toggleLikeQueueIndex(i) { if (playQueue[i]) toggleLikeSong(playQueue[i]
 function toggleLikeDetailSong(song) { toggleLikeSong(song); }
 function openCollectModal(song) {
   if (!isCloudSong(song)) {
-    showToast(songProviderKey(song) === 'qq' ? 'QQ 音乐收藏到歌单待登录接口接入' : '本地文件暂不支持收藏到网易云歌单');
+    var key = songProviderKey(song);
+    if (key === 'qq') showToast('QQ 音乐收藏到歌单待登录接口接入');
+    else if (key === 'navidrome') showToast('Navidrome 收藏到歌单暂未接入');
+    else showToast('本地文件暂不支持收藏到网易云歌单');
     return;
   }
   if (!ensureLoggedInForAction()) return;
@@ -17269,6 +17350,7 @@ function updateSearchModeTabs() {
   var songBtn = document.getElementById('search-mode-song');
   var neteaseBtn = document.getElementById('search-mode-netease');
   var qqBtn = document.getElementById('search-mode-qq');
+  var navidromeBtn = document.getElementById('search-mode-navidrome');
   var podcastBtn = document.getElementById('search-mode-podcast');
   if (songBtn) {
     songBtn.classList.toggle('active', searchMode === 'song');
@@ -17282,6 +17364,12 @@ function updateSearchModeTabs() {
     qqBtn.classList.toggle('active', searchMode === 'qq');
     qqBtn.setAttribute('aria-selected', searchMode === 'qq' ? 'true' : 'false');
   }
+  if (navidromeBtn) {
+    var showNd = hasPlatformLogin('navidrome');
+    navidromeBtn.style.display = showNd ? '' : 'none';
+    navidromeBtn.classList.toggle('active', searchMode === 'navidrome');
+    navidromeBtn.setAttribute('aria-selected', searchMode === 'navidrome' ? 'true' : 'false');
+  }
   if (podcastBtn) {
     podcastBtn.classList.toggle('active', searchMode === 'podcast');
     podcastBtn.setAttribute('aria-selected', searchMode === 'podcast' ? 'true' : 'false');
@@ -17289,12 +17377,19 @@ function updateSearchModeTabs() {
   if ($input) {
     $input.placeholder = searchMode === 'podcast'
       ? '搜索播客、电台...'
-      : (searchMode === 'qq' ? '搜索 QQ 音乐...' : (searchMode === 'netease' ? '搜索网易云音乐...' : '搜索歌曲、歌手...'));
+      : (searchMode === 'qq' ? '搜索 QQ 音乐...'
+        : (searchMode === 'netease' ? '搜索网易云音乐...'
+          : (searchMode === 'navidrome' ? '搜索 Navidrome 音乐库...' : '搜索歌曲、歌手...')));
   }
   requestAnimationFrame(updateSearchPillGlassDisplacementMap);
 }
 function setSearchMode(mode) {
-  mode = (mode === 'podcast' || mode === 'netease' || mode === 'qq') ? mode : 'song';
+  mode = (mode === 'podcast' || mode === 'netease' || mode === 'qq' || mode === 'navidrome') ? mode : 'song';
+  if (mode === 'navidrome' && !hasPlatformLogin('navidrome')) {
+    showToast('请先登录 Navidrome');
+    openProviderLogin('navidrome');
+    return;
+  }
   if (searchMode === mode) return;
   searchMode = mode;
   updateSearchModeTabs();
@@ -17508,13 +17603,15 @@ document.addEventListener('click', function(e){
 updateSearchModeTabs();
 
 function songProviderKey(song) {
-  if (song && (song.provider === 'local' || song.source === 'local' || song.type === 'local' || song.localPath || song.localUrl)) return 'local';
-  if (song && (song.provider === 'qq' || song.source === 'qq' || song.type === 'qq')) return 'qq';
+  if (!song) return 'netease';
+  if (song.provider === 'local' || song.source === 'local' || song.type === 'local' || song.localPath || song.localUrl) return 'local';
+  if (song.provider === 'navidrome' || song.source === 'navidrome' || song.type === 'navidrome' || song.navidromeId) return 'navidrome';
+  if (song.provider === 'qq' || song.source === 'qq' || song.type === 'qq') return 'qq';
   return 'netease';
 }
 function songSourceTagHtml(song) {
   var key = songProviderKey(song);
-  var label = key === 'local' ? 'LOCAL' : (key === 'qq' ? 'QQ' : 'NE');
+  var label = key === 'local' ? 'LOCAL' : (key === 'qq' ? 'QQ' : (key === 'navidrome' ? 'ND' : 'NE'));
   return '<span class="tag-source ' + key + '">' + label + '</span>';
 }
 function searchResultMetaText(song) {
@@ -17523,6 +17620,10 @@ function searchResultMetaText(song) {
   if (song.album) bits.push(song.album);
   if (songProviderKey(song) === 'qq' && !song.playable) bits.push('QQ 播放需会话/授权');
   if (songProviderKey(song) === 'local') bits.push('本地文件');
+  if (songProviderKey(song) === 'navidrome') {
+    if (song.suffix) bits.push(String(song.suffix).toUpperCase());
+    bits.push('Navidrome');
+  }
   return bits.join('  ·  ') || songSourceLabel(song);
 }
 function searchResultMetaHtml(song, index) {
@@ -17658,14 +17759,40 @@ async function fetchMusicSearchResults(q, mode) {
     var neOnly = await apiJson('/api/search?keywords=' + encodeURIComponent(q) + '&limit=18');
     return mergeSongSearchResults(neOnly.songs || [], [], 18, q);
   }
-  var result = await Promise.allSettled([
+  if (mode === 'navidrome') {
+    if (!hasPlatformLogin('navidrome')) return [];
+    var ndOnly = await apiJson('/api/navidrome/search?keywords=' + encodeURIComponent(q) + '&limit=24');
+    var ndSongs = (ndOnly && ndOnly.songs) || [];
+    if (!ndSongs.length && ndOnly && ndOnly.error) showToast('Navidrome 搜索失败: ' + ndOnly.error);
+    return ndSongs.slice(0, 24);
+  }
+  var calls = [
     apiJson('/api/search?keywords=' + encodeURIComponent(q) + '&limit=14'),
-    apiJson('/api/qq/search?keywords=' + encodeURIComponent(q) + '&limit=12')
-  ]);
+    apiJson('/api/qq/search?keywords=' + encodeURIComponent(q) + '&limit=12'),
+  ];
+  if (hasPlatformLogin('navidrome')) {
+    calls.push(apiJson('/api/navidrome/search?keywords=' + encodeURIComponent(q) + '&limit=10'));
+  }
+  var result = await Promise.allSettled(calls);
   var neteaseSongs = result[0].status === 'fulfilled' ? ((result[0].value && result[0].value.songs) || []) : [];
   var qqSongs = result[1].status === 'fulfilled' ? ((result[1].value && result[1].value.songs) || []) : [];
+  var navidromeSongs = (result[2] && result[2].status === 'fulfilled') ? ((result[2].value && result[2].value.songs) || []) : [];
   if (result[1].status === 'rejected') console.warn('QQ search failed:', result[1].reason);
-  return mergeSongSearchResults(neteaseSongs, qqSongs, 18, q);
+  var merged = [];
+  var seen = {};
+  function push(song, sourceIndex) {
+    if (!song || !song.name) return;
+    var key = songProviderKey(song) + ':' + (song.navidromeId || song.mid || song.id || (song.name + '|' + song.artist));
+    if (seen[key]) return;
+    seen[key] = true;
+    song._searchScore = scoreSongSearchResult(song, q, sourceIndex);
+    merged.push(song);
+  }
+  (neteaseSongs || []).forEach(function(song, i){ push(song, i); });
+  (qqSongs || []).forEach(function(song, i){ push(song, i + 14); });
+  (navidromeSongs || []).forEach(function(song, i){ push(song, i + 26); });
+  merged.sort(function(a, b){ return (b._searchScore || 0) - (a._searchScore || 0); });
+  return merged.slice(0, 18);
 }
 function renderSongSearchResults(songs) {
   playlist = songs || [];
@@ -18142,14 +18269,25 @@ function localPlaybackUrl(song) {
   if (song.localPath) return '/api/local/audio?path=' + encodeURIComponent(song.localPath);
   return '';
 }
+function navidromePlaybackUrl(song) {
+  if (!song) return '';
+  var id = String(song.navidromeId || song.id || '').replace(/^navidrome:/, '');
+  if (!id) return '';
+  return '/api/navidrome/song/url?id=' + encodeURIComponent(id);
+}
 
 function playbackProviderLabel(song) {
   var key = songProviderKey(song);
   if (key === 'local') return '本地文件';
+  if (key === 'navidrome') return 'Navidrome';
   return key === 'qq' ? 'QQ 音乐' : '网易云';
 }
 function playbackLoginProvider(song) {
-  return songProviderKey(song) === 'qq' ? 'qq' : 'netease';
+  var key = songProviderKey(song);
+  if (key === 'qq') return 'qq';
+  if (key === 'navidrome') return 'navidrome';
+  if (key === 'local') return null;
+  return 'netease';
 }
 function playbackRestrictionMessage(song, data) {
   data = data || {};
@@ -18476,18 +18614,21 @@ async function playQueueAt(idx, opts) {
     markPlayPhase('source-url');
     var providerKey = songProviderKey(song);
     var isLocalPlayback = providerKey === 'local';
+    var isNavidromePlayback = providerKey === 'navidrome';
     var isQQPlayback = providerKey === 'qq';
     var requestedQuality = normalizePlaybackQuality(opts.qualityOverride || playbackQuality);
-    if (!isQQPlayback && !isLocalPlayback && requestedQuality === 'jymaster' && !hasProviderSvip('netease', loginStatus)) requestedQuality = 'hires';
+    if (!isQQPlayback && !isLocalPlayback && !isNavidromePlayback && requestedQuality === 'jymaster' && !hasProviderSvip('netease', loginStatus)) requestedQuality = 'hires';
     if (isQQPlayback && qqPlaybackQualityCeiling && (requestedQuality === 'jymaster' || requestedQuality === 'hires' || requestedQuality === 'lossless')) {
       requestedQuality = qqPlaybackQualityCeiling;
     }
     var qualityParam = '&quality=' + encodeURIComponent(requestedQuality);
     var data = isLocalPlayback
       ? { url: localPlaybackUrl(song), local: true, playable: true, quality: 'local' }
-      : (isQQPlayback
-        ? await apiJson('/api/qq/song/url?mid=' + encodeURIComponent(song.mid || song.songmid || song.id || '') + '&mediaMid=' + encodeURIComponent(song.mediaMid || song.media_mid || '') + qualityParam)
-        : await apiJson('/api/song/url?id=' + song.id + qualityParam));
+      : (isNavidromePlayback
+        ? await apiJson('/api/navidrome/song/url?id=' + encodeURIComponent(String(song.navidromeId || String(song.id || '').replace(/^navidrome:/, ''))) + qualityParam)
+        : (isQQPlayback
+          ? await apiJson('/api/qq/song/url?mid=' + encodeURIComponent(song.mid || song.songmid || song.id || '') + '&mediaMid=' + encodeURIComponent(song.mediaMid || song.media_mid || '') + qualityParam)
+          : await apiJson('/api/song/url?id=' + song.id + qualityParam)));
     if (token !== trackSwitchToken) return;
     if (!data.url) {
       if (isQQPlayback && await retryQQPlaybackWithCompatibleQuality(song, idx, token, opts, data, requestedQuality)) return;
@@ -18496,7 +18637,7 @@ async function playQueueAt(idx, opts) {
       return;
     }
     var resolvedQualityText = playbackResolvedQualityText(data);
-    if (!isQQPlayback && !isLocalPlayback && playbackQualityWasDowngraded(requestedQuality, data.level)) {
+    if (!isQQPlayback && !isLocalPlayback && !isNavidromePlayback && playbackQualityWasDowngraded(requestedQuality, data.level)) {
       showSourceFallbackNotice('网易云音质自动降级', '请求 ' + playbackQualityLabel(requestedQuality) + '，实际播放 ' + resolvedQualityText + '。');
     } else if (opts.qualitySwitch) {
       showSourceFallbackNotice('音质已切换', '实际播放: ' + resolvedQualityText + '。');
@@ -18524,7 +18665,7 @@ async function playQueueAt(idx, opts) {
     }
     bindPlaybackProgressEvents(audio);
     applyVolumeToAudio();
-    var proxyAudioUrl = isLocalPlayback ? data.url : ('/api/audio?url=' + encodeURIComponent(data.url));
+    var proxyAudioUrl = (isLocalPlayback || isNavidromePlayback) ? data.url : ('/api/audio?url=' + encodeURIComponent(data.url));
     audio.src = proxyAudioUrl;
     updatePlaybackProgressUi();
     audio.onended = function(){
@@ -18534,11 +18675,15 @@ async function playQueueAt(idx, opts) {
       else setTimeout(nextTrack, 0);
     };
     audio.onloadedmetadata = function(){
-      if (!isLocalPlayback || token !== trackSwitchToken) return;
+      if ((!isLocalPlayback && !isNavidromePlayback) || token !== trackSwitchToken) return;
       var duration = audio && isFinite(audio.duration) ? audio.duration : 0;
       if (duration && playQueue[idx]) {
         playQueue[idx].duration = duration;
-        if (currentLocalSong && currentLocalSong.localKey === song.localKey) currentLocalSong.duration = duration;
+        if (isLocalPlayback && currentLocalSong && currentLocalSong.localKey === song.localKey) currentLocalSong.duration = duration;
+        if (isNavidromePlayback) {
+          var navKey = song.navidromeId || String(song.id || '').replace(/^navidrome:/, '');
+          if (currentLocalSong && currentLocalSong.navidromeId === navKey) currentLocalSong.duration = duration;
+        }
         safeRenderQueuePanel('local-duration', { scrollCurrent: miniQueueOpen });
       }
       if (lyricSourceMode === 'custom') applyCustomLyricState(playQueue[idx] || song, true);
@@ -19452,7 +19597,7 @@ function renderQueuePanel(opts) {
   renderMiniQueuePanel({ scrollCurrent: miniQueueOpen });
 }
 async function refreshUserPlaylists(force) {
-  if (!loginStatus.loggedIn && !qqLoginStatus.loggedIn) {
+  if (!loginStatus.loggedIn && !qqLoginStatus.loggedIn && !navidromeLoginStatus.loggedIn) {
     resetPlaylistPanelRenderLimit();
     document.getElementById('pl-list').innerHTML = '<div style="text-align:center;padding:24px 0;color:rgba(255,255,255,.32);font-size:11.5px">登录后显示个人歌单</div>';
     var podcastListLoggedOut = document.getElementById('podcast-list');
@@ -19461,8 +19606,10 @@ async function refreshUserPlaylists(force) {
   }
   if (force) resetPlaylistPanelRenderLimit();
   var hasCachedQQPlaylists = userPlaylists.some(function(pl){ return pl && pl.provider === 'qq'; });
+  var hasCachedNavidromePlaylists = userPlaylists.some(function(pl){ return pl && pl.provider === 'navidrome'; });
   var needsQQRefresh = qqLoginStatus.loggedIn && !hasCachedQQPlaylists;
-  if (!force && !needsQQRefresh && (userPlaylists.length || myPodcastCollections.length)) {
+  var needsNavidromeRefresh = navidromeLoginStatus.loggedIn && !hasCachedNavidromePlaylists;
+  if (!force && !needsQQRefresh && !needsNavidromeRefresh && (userPlaylists.length || myPodcastCollections.length)) {
     var cachedAnimate = isPlaylistPanelVisibleForRender();
     renderUserPlaylistsList({ animate: cachedAnimate });
     renderMyPodcastCollections({ animate: cachedAnimate });
@@ -19479,11 +19626,19 @@ async function refreshUserPlaylists(force) {
     var result = await Promise.all([
       loginStatus.loggedIn ? apiJson('/api/user/playlists') : Promise.resolve({ playlists: [] }),
       loginStatus.loggedIn ? apiJson('/api/podcast/my') : Promise.resolve({ collections: [], loggedIn: false }),
-      qqLoginStatus.loggedIn ? apiJson('/api/qq/user/playlists') : Promise.resolve({ playlists: [] })
+      qqLoginStatus.loggedIn ? apiJson('/api/qq/user/playlists') : Promise.resolve({ playlists: [] }),
+      navidromeLoginStatus.loggedIn ? apiJson('/api/navidrome/user/playlists') : Promise.resolve({ provider: 'navidrome', playlists: [] })
     ]);
     var neteaseLists = (result[0].playlists || []).map(function(pl){ pl.provider = 'netease'; pl.source = 'netease'; return pl; });
     qqPlaylists = (result[2].playlists || []).map(function(pl){ pl.provider = 'qq'; pl.source = 'qq'; return pl; });
-    userPlaylists = neteaseLists.concat(qqPlaylists);
+    var navidromeLists = (result[3].playlists || []).map(function(pl){
+      pl.provider = 'navidrome';
+      pl.source = 'navidrome';
+      if (!pl.id) return pl;
+      pl.playlistId = 'navidrome:' + pl.id;
+      return pl;
+    });
+    userPlaylists = neteaseLists.concat(qqPlaylists).concat(navidromeLists);
     myPodcastCollections = result[1].collections || [];
     var animatePanel = isPlaylistPanelVisibleForRender();
     renderUserPlaylistsList({ animate: animatePanel, reset: true });
@@ -19494,10 +19649,14 @@ async function refreshUserPlaylists(force) {
 }
 var playlistPanelDetailState = { key: '', loading: false, playlist: null, tracks: [], token: 0, renderLimit: PLAYLIST_DETAIL_INITIAL_RENDER };
 function playlistPanelKey(provider, id) {
-  return (provider === 'qq' ? 'qq' : 'netease') + ':' + String(id || '');
+  if (provider === 'qq') return 'qq:' + String(id || '');
+  if (provider === 'navidrome') return 'navidrome:' + String(id || '');
+  return 'netease:' + String(id || '');
 }
 function playlistPanelProviderId(provider, id) {
-  return provider === 'qq' ? ('qq:' + id) : id;
+  if (provider === 'qq') return 'qq:' + id;
+  if (provider === 'navidrome') return 'navidrome:' + id;
+  return id;
 }
 function playlistPanelDetailHtml(pl, provider) {
   var key = playlistPanelKey(provider, pl && pl.id);
@@ -19564,9 +19723,9 @@ function scrollPlaylistPanelDetailIntoView(key) {
 }
 async function openPlaylistPanelDetail(provider, pid, title) {
   if (!pid) return;
-  provider = provider === 'qq' ? 'qq' : 'netease';
+  provider = provider === 'qq' || provider === 'navidrome' ? provider : 'netease';
   var key = playlistPanelKey(provider, pid);
-  var pl = userPlaylists.find(function(item){ return playlistPanelKey(item.provider === 'qq' ? 'qq' : 'netease', item.id) === key; }) || { id: pid, provider: provider, name: title || '歌单详情' };
+  var pl = userPlaylists.find(function(item){ return playlistPanelKey(item.provider === 'qq' ? 'qq' : (item.provider === 'navidrome' ? 'navidrome' : 'netease'), item.id) === key; }) || { id: pid, provider: provider, name: title || '歌单详情' };
   if (playlistPanelDetailState.key === key && !playlistPanelDetailState.loading && playlistPanelDetailState.tracks.length) {
     playlistPanelDetailState.key = '';
     playlistPanelDetailState.tracks = [];
@@ -19582,7 +19741,9 @@ async function openPlaylistPanelDetail(provider, pid, title) {
   try {
     var r = provider === 'qq'
       ? await apiJson('/api/qq/playlist/tracks?id=' + encodeURIComponent(pid))
-      : await apiJson('/api/playlist/tracks?id=' + encodeURIComponent(pid));
+      : (provider === 'navidrome'
+        ? await apiJson('/api/navidrome/playlist/tracks?id=' + encodeURIComponent(pid))
+        : await apiJson('/api/playlist/tracks?id=' + encodeURIComponent(pid)));
     if (playlistPanelDetailState.token !== token) return;
     playlistPanelDetailState.loading = false;
     playlistPanelDetailState.tracks = (r && r.tracks || []).map(cloneSong);
@@ -19602,7 +19763,7 @@ function playPlaylistPanelDetail() {
   var st = playlistPanelDetailState;
   if (!st || !st.key) return;
   var parts = st.key.split(':');
-  var provider = parts[0] === 'qq' ? 'qq' : 'netease';
+  var provider = parts[0] === 'qq' ? 'qq' : (parts[0] === 'navidrome' ? 'navidrome' : 'netease');
   var pid = parts.slice(1).join(':');
   loadPlaylistIntoQueueById(playlistPanelProviderId(provider, pid), true, st.playlist && st.playlist.name || '');
 }
@@ -19672,20 +19833,21 @@ function renderUserPlaylistsList(opts) {
     return;
   }
   function playlistCardHtml(pl) {
-    var provider = pl.provider === 'qq' ? 'qq' : 'netease';
-    var providerLabel = provider === 'qq' ? 'QQ' : 'NE';
+    var provider = pl.provider === 'qq' ? 'qq' : (pl.provider === 'navidrome' ? 'navidrome' : 'netease');
+    var providerLabel = provider === 'qq' ? 'QQ' : (provider === 'navidrome' ? 'ND' : 'NE');
     var thumb = pl.cover ? (provider === 'qq' ? pl.cover : (pl.cover + '?param=88y88')) : '';
     var imgTag = thumb ? '<img src="' + thumb + '" alt="" loading="lazy" decoding="async" onerror="this.style.opacity=0.2">' : '<div style="width:44px;height:44px;border-radius:8px;background:rgba(255,255,255,.06);flex-shrink:0"></div>';
     var key = playlistPanelKey(provider, pl.id);
     var expanded = playlistPanelDetailState.key === key ? ' expanded' : '';
     return '<div class="pl-card' + expanded + '" data-playlist-provider="' + provider + '" data-playlist-id="' + escHtml(String(pl.id || '')) + '" data-playlist-title="' + escHtml(pl.name || '') + '">' +
       imgTag +
-      '<div style="flex:1;min-width:0"><div class="pl-name">' + escHtml(pl.name) + '<span class="tag-source ' + provider + '" style="margin-left:6px;vertical-align:1px">' + providerLabel + '</span></div><div class="pl-sub">' + pl.trackCount + ' 首 · ' + escHtml(pl.creator || '') + '</div></div>' +
+      '<div style="flex:1;min-width:0"><div class="pl-name">' + escHtml(pl.name) + '<span class="tag-source ' + provider + '" style="margin-left:6px;vertical-align:1px">' + providerLabel + '</span></div><div class="pl-sub">' + (pl.trackCount || 0) + ' 首 · ' + escHtml(pl.creator || '') + '</div></div>' +
     '</div>' + playlistPanelDetailHtml(pl, provider);
   }
   var groups = [
-    { key:'netease', label:'网易云歌单', items:userPlaylists.filter(function(pl){ return pl.provider !== 'qq'; }) },
-    { key:'qq', label:'QQ 音乐歌单', items:userPlaylists.filter(function(pl){ return pl.provider === 'qq'; }) }
+    { key:'netease', label:'网易云歌单', items:userPlaylists.filter(function(pl){ return pl.provider === 'netease'; }) },
+    { key:'qq', label:'QQ 音乐歌单', items:userPlaylists.filter(function(pl){ return pl.provider === 'qq'; }) },
+    { key:'navidrome', label:'Navidrome 歌单', items:userPlaylists.filter(function(pl){ return pl.provider === 'navidrome'; }) }
   ];
   if (opts.reset) resetPlaylistPanelRenderLimit();
   playlistPanelRenderLimit = Math.max(PLAYLIST_PANEL_BATCH_SIZE, Math.min(userPlaylists.length, playlistPanelRenderLimit || PLAYLIST_PANEL_BATCH_SIZE));
@@ -19875,12 +20037,16 @@ async function loadPlaylistIntoQueueById(id, autoplay, title) {
   homeSuppressed = false;
   updateEmptyHomeVisibility();
   showLoading();
-  var qqPlaylistId = String(id || '').indexOf('qq:') === 0 ? String(id).slice(3) : '';
+  var rawId = String(id || '');
+  var qqPlaylistId = rawId.indexOf('qq:') === 0 ? rawId.slice(3) : '';
+  var ndPlaylistId = rawId.indexOf('navidrome:') === 0 ? rawId.slice('navidrome:'.length) : '';
   var r = null;
   try {
     r = qqPlaylistId
       ? await apiJson('/api/qq/playlist/tracks?id=' + encodeURIComponent(qqPlaylistId))
-      : await apiJson('/api/playlist/tracks?id=' + encodeURIComponent(id));
+      : (ndPlaylistId
+        ? await apiJson('/api/navidrome/playlist/tracks?id=' + encodeURIComponent(ndPlaylistId))
+        : await apiJson('/api/playlist/tracks?id=' + encodeURIComponent(id)));
   } catch (e) {
     console.warn('[PlaylistLoadApi]', id, e);
     showToast('歌单加载失败');
@@ -19891,8 +20057,8 @@ async function loadPlaylistIntoQueueById(id, autoplay, title) {
     if (r.error) { showToast('歌单加载失败: ' + r.error); return; }
     if (!r.tracks || !r.tracks.length) { showToast('歌单为空'); return; }
     playQueue = r.tracks.map(cloneSong);
-    if (!qqPlaylistId && isLikedPlaylistContext(id, title, r.playlist)) markSongsLiked(playQueue, true);
-    if (!qqPlaylistId) syncLikeStatusForSongs(playQueue);
+    if (!qqPlaylistId && !ndPlaylistId && isLikedPlaylistContext(id, title, r.playlist)) markSongsLiked(playQueue, true);
+    if (!qqPlaylistId && !ndPlaylistId) syncLikeStatusForSongs(playQueue);
     currentIdx = 0;
     safeRenderQueuePanel('playlist-load');
     safeSwitchPlaylistTab('queue', 'playlist-load');
@@ -23275,10 +23441,13 @@ function onUserBtnClick() {
 }
 function platformMeta(provider) {
   if (provider === 'qq') return { key: 'qq', short: 'QQ', label: 'QQ 音乐', app: 'QQ 音乐 App', dot: 'qq' };
+  if (provider === 'navidrome') return { key: 'navidrome', short: 'ND', label: 'Navidrome', app: 'Navidrome Server', dot: 'navidrome' };
   return { key: 'netease', short: 'NE', label: '网易云音乐', app: '网易云音乐 App', dot: 'netease' };
 }
 function platformStatus(provider) {
-  return provider === 'qq' ? qqLoginStatus : loginStatus;
+  if (provider === 'qq') return qqLoginStatus;
+  if (provider === 'navidrome') return navidromeLoginStatus;
+  return loginStatus;
 }
 function providerVipType(provider, status) {
   status = status || platformStatus(provider) || {};
@@ -23315,20 +23484,21 @@ function hasPlatformLogin(provider) {
   return !!(st && st.loggedIn);
 }
 function hasAnyPlatformLogin() {
-  return hasPlatformLogin('netease') || hasPlatformLogin('qq');
+  return hasPlatformLogin('netease') || hasPlatformLogin('qq') || hasPlatformLogin('navidrome');
 }
 function firstLoggedProvider() {
   if (hasPlatformLogin(activeAccountProvider)) return activeAccountProvider;
   if (hasPlatformLogin('netease')) return 'netease';
   if (hasPlatformLogin('qq')) return 'qq';
+  if (hasPlatformLogin('navidrome')) return 'navidrome';
   return 'netease';
 }
 function providerAvatarSrc(provider, status) {
   status = status || platformStatus(provider) || {};
   if (status.avatar) return avatarSrc(status.avatar);
   var meta = platformMeta(provider);
-  var fill = provider === 'qq' ? '#bfd66b' : '#d95b67';
-  var bg = provider === 'qq' ? '#11150b' : '#180b0f';
+  var fill = provider === 'qq' ? '#bfd66b' : (provider === 'navidrome' ? '#7fb6ff' : '#d95b67');
+  var bg = provider === 'qq' ? '#11150b' : (provider === 'navidrome' ? '#0a1424' : '#180b0f');
   var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 96 96"><rect width="96" height="96" rx="48" fill="' + bg + '"/><circle cx="48" cy="48" r="34" fill="' + fill + '" opacity=".16"/><text x="48" y="56" text-anchor="middle" font-family="Arial, sans-serif" font-size="26" font-weight="700" fill="' + fill + '">' + meta.short + '</text></svg>';
   return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
 }
@@ -23338,7 +23508,7 @@ function renderTopAccountPill(provider) {
   var meta = platformMeta(provider);
   var displayName = (provider === 'qq' && st.preview) ? '待接入' : (st.nickname || meta.label);
   var vipTag = providerVipBadge(provider, st);
-  return '<span class="top-account-pill">' +
+  return '<span class="top-account-pill ' + provider + '">' +
     '<img src="' + providerAvatarSrc(provider, st) + '" alt="">' +
     '<span class="top-account-name">' + escHtml(displayName) + '</span>' +
     vipTag +
@@ -23472,13 +23642,15 @@ function closeLoginModal() {
   closeGsapModal(document.getElementById('login-modal'));
 }
 function setLoginProvider(provider, silent) {
-  loginProvider = provider === 'qq' ? 'qq' : 'netease';
+  if (provider === 'qq' || provider === 'netease' || provider === 'navidrome') loginProvider = provider;
+  else loginProvider = 'netease';
   updateLoginProviderUi();
   if (!silent && document.getElementById('login-modal').classList.contains('show')) refreshQr();
 }
 function updateLoginProviderUi() {
   var meta = platformMeta(loginProvider);
   var isQQ = loginProvider === 'qq';
+  var isNavidrome = loginProvider === 'navidrome';
   var title = document.getElementById('login-modal-title');
   var desc = document.getElementById('login-modal-desc');
   var shell = document.getElementById('qr-shell');
@@ -23489,25 +23661,33 @@ function updateLoginProviderUi() {
   var qqCard = document.getElementById('qq-web-login-card');
   var neteaseBtn = document.getElementById('login-provider-netease');
   var qqBtn = document.getElementById('login-provider-qq');
+  var navidromeBtn = document.getElementById('login-provider-navidrome');
+  var navidromePanel = document.getElementById('navidrome-login-panel');
+  var loginBothBtn = document.getElementById('login-both-btn');
   var canOpenNeteaseWeb = !!(window.desktopWindow && typeof window.desktopWindow.openNeteaseMusicLogin === 'function');
   if (neteaseBtn) neteaseBtn.classList.toggle('active', loginProvider === 'netease');
   if (qqBtn) qqBtn.classList.toggle('active', isQQ);
-  if (title) title.textContent = '扫码登录' + meta.label;
-  if (desc) desc.innerHTML = isQQ
-    ? '打开 <b>QQ 音乐官方网页登录窗口</b> 扫码，成功后会自动同步账号会话。'
-    : (canOpenNeteaseWeb
-      ? '打开 <b>网易云音乐官方网页登录窗口</b> 扫码，避开接口二维码风控；成功后会自动同步账号会话。'
-      : '使用 <b>网易云音乐 App</b> 扫码，可同步歌单、红心与播客。');
+  if (navidromeBtn) navidromeBtn.classList.toggle('active', isNavidrome);
+  if (title) title.textContent = isNavidrome ? '登录 Navidrome' : ('扫码登录' + meta.label);
+  if (desc) desc.innerHTML = isNavidrome
+    ? '填写你的 <b>Navidrome / Subsonic</b> 服务器、用户名和密码后保存即可。'
+    : (isQQ
+      ? '打开 <b>QQ 音乐官方网页登录窗口</b> 扫码，成功后会自动同步账号会话。'
+      : (canOpenNeteaseWeb
+        ? '打开 <b>网易云音乐官方网页登录窗口</b> 扫码，避开接口二维码风控；成功后会自动同步账号会话。'
+        : '使用 <b>网易云音乐 App</b> 扫码，可同步歌单、红心与播客。'));
+  if (shell) shell.style.display = isNavidrome ? 'none' : '';
   if (shell) {
     shell.classList.toggle('web-login-preview', isQQ || canOpenNeteaseWeb);
     shell.classList.toggle('qq-preview', isQQ);
-    shell.classList.toggle('netease-preview', !isQQ && canOpenNeteaseWeb);
+    shell.classList.toggle('netease-preview', !isQQ && !isNavidrome && canOpenNeteaseWeb);
   }
   if (qqPanel) qqPanel.classList.toggle('show', isQQ && qqManualCookieOpen);
   if (qqCookieToggle) {
     qqCookieToggle.classList.toggle('show', isQQ);
     qqCookieToggle.textContent = qqManualCookieOpen ? '收起导入' : '手动导入';
   }
+  if (qqCard) qqCard.style.display = isNavidrome ? 'none' : '';
   if (qqCard) {
     qqCard.disabled = isQQ ? !!qqWebLoginBusy : !!neteaseWebLoginBusy;
     var cardMark = qqCard.querySelector('b');
@@ -23517,21 +23697,27 @@ function updateLoginProviderUi() {
       ? (qqWebLoginBusy ? '等待扫码确认' : '打开官方扫码窗口')
       : (neteaseWebLoginBusy ? '等待扫码确认' : '打开官方登录窗口');
   }
+  if (st) st.style.display = isNavidrome ? 'none' : '';
   if (st) {
     st.className = isQQ ? 'preview' : '';
     st.textContent = isQQ
       ? (qqLoginStatus.loggedIn ? ('已保存 QQ 音乐会话 · ' + (qqLoginStatus.nickname || '')) : '点击“扫码登录”打开 QQ 音乐官方窗口')
       : (canOpenNeteaseWeb ? '点击“网页登录”打开网易云官方窗口' : '正在生成二维码…');
   }
+  if (refreshBtn) refreshBtn.style.display = isNavidrome ? 'none' : '';
   if (refreshBtn) {
     refreshBtn.disabled = isQQ ? !!qqWebLoginBusy : !!neteaseWebLoginBusy;
     refreshBtn.textContent = isQQ ? (qqWebLoginBusy ? '等待扫码…' : '扫码登录') : (canOpenNeteaseWeb ? (neteaseWebLoginBusy ? '等待扫码…' : '网页登录') : '刷新二维码');
     refreshBtn.onclick = isQQ ? openQQWebLogin : (canOpenNeteaseWeb ? openNeteaseWebLogin : refreshQr);
   }
+  if (navidromePanel) navidromePanel.classList.toggle('show', isNavidrome);
+  if (loginBothBtn) loginBothBtn.style.display = isNavidrome ? 'none' : '';
+  if (isNavidrome) syncNavidromeLoginPanelFromStatus();
 }
 async function refreshQr() {
   stopQrPoll();
   updateLoginProviderUi();
+  if (loginProvider === 'navidrome') return;
   if (loginProvider === 'qq') {
     qrKey = null;
     var qqStatus = document.getElementById('qr-status');
@@ -23710,6 +23896,161 @@ async function submitQQCookieLogin() {
     if (saveBtn) saveBtn.classList.remove('busy');
   }
 }
+async function submitNavidromeLogin() {
+  if (navidromeLoginBusy) return;
+  var serverInput = document.getElementById('navidrome-server-input');
+  var userInput = document.getElementById('navidrome-username-input');
+  var passInput = document.getElementById('navidrome-password-input');
+  var selfSignedRow = document.getElementById('navidrome-selfsigned-row');
+  var saveBtn = document.getElementById('navidrome-save-btn');
+  var pingBtn = document.getElementById('navidrome-ping-btn');
+  var statusEl = document.getElementById('navidrome-login-status');
+  var server = serverInput ? serverInput.value.trim() : '';
+  var username = userInput ? userInput.value.trim() : '';
+  var password = passInput ? passInput.value : '';
+  var allowSelfSigned = !!(selfSignedRow && selfSignedRow.classList.contains('on'));
+  if (!server || !username || !password) {
+    if (statusEl) { statusEl.textContent = '服务器、用户名和密码都需要'; statusEl.className = 'fail'; }
+    return;
+  }
+  navidromeLoginBusy = true;
+  if (saveBtn) saveBtn.disabled = true;
+  if (pingBtn) pingBtn.disabled = true;
+  if (statusEl) { statusEl.textContent = '正在连接 Navidrome…'; statusEl.className = 'preview'; }
+  try {
+    var info = await apiJson('/api/navidrome/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ server: server, username: username, password: password, allowSelfSigned: allowSelfSigned }),
+    });
+    if (!info || !info.loggedIn) throw new Error((info && (info.message || info.error)) || 'Navidrome 登录失败');
+    navidromeLoginStatus = Object.assign({}, navidromeLoginStatus, info);
+    if (userInput) userInput.value = '';
+    if (passInput) passInput.value = '';
+    syncNavidromeLoginPanelFromStatus();
+    activeAccountProvider = 'navidrome';
+    dualAccountMode = false;
+    renderUserBtn();
+    refreshUserPlaylists(true);
+    updateSearchModeTabs();
+    if (statusEl) { statusEl.textContent = '已连接 Navidrome · ' + (info.nickname || info.username || ''); statusEl.className = 'scan'; }
+    setTimeout(function(){
+      closeLoginModal();
+      showToast('Navidrome 已登录: ' + (info.nickname || info.username || ''));
+    }, 480);
+  } catch (e) {
+    navidromeLoginStatus = Object.assign({}, navidromeLoginStatus, { loggedIn: false, lastError: (e && e.message) || 'NAVIDROME_LOGIN_FAILED' });
+    if (statusEl) { statusEl.textContent = (e && e.message) ? e.message : '登录失败'; statusEl.className = 'fail'; }
+  } finally {
+    navidromeLoginBusy = false;
+    if (saveBtn) saveBtn.disabled = false;
+    if (pingBtn) pingBtn.disabled = false;
+  }
+}
+async function pingNavidrome() {
+  if (navidromeLoginBusy) return;
+  var serverInput = document.getElementById('navidrome-server-input');
+  var selfSignedRow = document.getElementById('navidrome-selfsigned-row');
+  var pingBtn = document.getElementById('navidrome-ping-btn');
+  var statusEl = document.getElementById('navidrome-login-status');
+  var server = serverInput ? serverInput.value.trim() : '';
+  var allowSelfSigned = !!(selfSignedRow && selfSignedRow.classList.contains('on'));
+  if (!server) {
+    if (statusEl) { statusEl.textContent = '先填写服务器地址'; statusEl.className = 'fail'; }
+    return;
+  }
+  navidromeLoginBusy = true;
+  if (pingBtn) pingBtn.disabled = true;
+  if (statusEl) { statusEl.textContent = '测试中…'; statusEl.className = 'preview'; }
+  try {
+    await apiJson('/api/navidrome/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ server: server, username: 'ping', password: 'ping-probe', allowSelfSigned: allowSelfSigned }),
+    });
+    if (statusEl) { statusEl.textContent = '服务器可达（用户名/密码会在保存时校验）'; statusEl.className = 'scan'; }
+  } catch (e) {
+    if (statusEl) {
+      var msg = (e && e.message) || '';
+      if (/SUBSONIC_FAILED:.*username|password|credentials|Unauthorized/i.test(msg)) {
+        statusEl.textContent = '服务器可达 · 凭据未保存';
+      } else {
+        statusEl.textContent = '服务器不可达: ' + msg;
+      }
+      statusEl.className = /SUBSONIC_FAILED.*credentials|Unauthorized/i.test(msg) ? 'scan' : 'fail';
+    }
+  } finally {
+    navidromeLoginBusy = false;
+    if (pingBtn) pingBtn.disabled = false;
+  }
+}
+function toggleNavidromeSelfSignedRow() {
+  var row = document.getElementById('navidrome-selfsigned-row');
+  if (!row) return;
+  row.classList.toggle('on');
+  row.setAttribute('aria-checked', row.classList.contains('on') ? 'true' : 'false');
+}
+function syncNavidromeLoginPanelFromStatus() {
+  var row = document.getElementById('navidrome-selfsigned-row');
+  if (row) {
+    row.classList.toggle('on', !!navidromeLoginStatus.allowSelfSigned);
+    row.setAttribute('aria-checked', navidromeLoginStatus.allowSelfSigned ? 'true' : 'false');
+  }
+  var serverInput = document.getElementById('navidrome-server-input');
+  if (serverInput && navidromeLoginStatus.server && !serverInput.value) serverInput.value = navidromeLoginStatus.server;
+  var userInput = document.getElementById('navidrome-username-input');
+  if (userInput && navidromeLoginStatus.username && !userInput.value) userInput.value = navidromeLoginStatus.username;
+  var statusEl = document.getElementById('navidrome-login-status');
+  if (!statusEl) return;
+  if (navidromeLoginStatus.loggedIn) {
+    statusEl.textContent = '已连接 · ' + (navidromeLoginStatus.nickname || navidromeLoginStatus.username || '');
+    statusEl.className = 'scan';
+  } else if (navidromeLoginStatus.lastError) {
+    statusEl.textContent = navidromeLoginStatus.lastError;
+    statusEl.className = 'fail';
+  } else {
+    statusEl.textContent = '填写服务器、用户名和密码后保存即可连接。';
+    statusEl.className = 'preview';
+  }
+}
+async function refreshNavidromeLoginStatus() {
+  try {
+    var info = await apiJson('/api/navidrome/login/status?t=' + Date.now());
+    var prevLogged = !!navidromeLoginStatus.loggedIn;
+    navidromeLoginStatus = Object.assign({}, navidromeLoginStatus, info || {}, { provider: 'navidrome' });
+    if (navidromeLoginStatus.loggedIn && !navidromeLoginStatus.nickname) {
+      navidromeLoginStatus.nickname = navidromeLoginStatus.username || 'Navidrome';
+    }
+    if (!navidromeLoginStatus.loggedIn) {
+      if (prevLogged || navidromeLoginWasLoggedIn) {
+        showToast(navidromeLoginStatus.error ? ('Navidrome 状态异常: ' + navidromeLoginStatus.error) : 'Navidrome 连接已断开');
+      }
+      userPlaylists = userPlaylists.filter(function(pl){ return pl.provider !== 'navidrome'; });
+      updateSearchModeTabs();
+    } else {
+      updateSearchModeTabs();
+      if (!userPlaylists.some(function(pl){ return pl && pl.provider === 'navidrome'; })) {
+        refreshUserPlaylists(true);
+      }
+    }
+    navidromeLoginWasLoggedIn = !!navidromeLoginStatus.loggedIn;
+    if (!hasPlatformLogin(activeAccountProvider)) activeAccountProvider = firstLoggedProvider();
+    syncNavidromeLoginPanelFromStatus();
+    renderUserBtn();
+    return navidromeLoginStatus;
+  } catch (e) {
+    console.warn('Navidrome login status failed:', e);
+    navidromeLoginStatus = Object.assign({}, navidromeLoginStatus, { loggedIn: false, lastError: e.message || 'NAVIDROME_STATUS_FAILED' });
+    renderUserBtn();
+    return navidromeLoginStatus;
+  }
+}
+function startNavidromeLoginStatusAutoRefresh() {
+  if (navidromeLoginAutoRefreshTimer) clearInterval(navidromeLoginAutoRefreshTimer);
+  navidromeLoginAutoRefreshTimer = setInterval(function(){
+    refreshNavidromeLoginStatus().catch(function(e){ console.warn('Navidrome login auto refresh failed:', e); });
+  }, 45000);
+}
 async function checkQr() {
   if (!qrKey) return;
   try {
@@ -23752,6 +24093,7 @@ function updateUserModalUi() {
   var logoutBtn = document.getElementById('account-logout-btn');
   var addNetease = document.getElementById('account-add-netease');
   var addQQ = document.getElementById('account-add-qq');
+  var addNav = document.getElementById('account-add-navidrome');
   if (chip) {
     chip.className = 'account-provider-chip ' + activeAccountProvider;
     chip.innerHTML = '<span class="account-source-dot ' + meta.dot + '"></span><span>' + meta.label + '</span>';
@@ -23764,22 +24106,31 @@ function updateUserModalUi() {
       var vipLabel = neVipLevel === 'svip' ? '网易云 SVIP' : (neVipLevel === 'vip' ? '网易云 VIP' : '普通用户');
       vipEl.textContent = 'UID: ' + ((st && st.userId) || '-') + '  ·  ' + vipLabel;
       vipEl.style.color = hasProviderVip('netease', st) ? 'rgba(244,210,138,0.86)' : 'rgba(255,255,255,0.5)';
-    } else {
+    } else if (activeAccountProvider === 'qq') {
       var qqVipLabel = hasProviderVip('qq', st) ? 'QQ VIP 会员' : 'QQ 音乐会话';
       vipEl.textContent = 'UID: ' + ((st && st.userId) || '-') + '  ·  ' + qqVipLabel;
       vipEl.style.color = hasProviderVip('qq', st) ? 'rgba(0,245,212,0.82)' : 'rgba(0,245,212,0.58)';
+    } else if (activeAccountProvider === 'navidrome') {
+      var ndServer = st && st.server ? st.server : '-';
+      var ndAdmin = st && st.adminRole ? '  ·  管理员' : '';
+      vipEl.textContent = '服务器: ' + ndServer + '  ·  Navidrome 用户' + ndAdmin;
+      vipEl.style.color = 'rgba(120,180,255,0.78)';
     }
   }
-  ['netease','qq','both'].forEach(function(key){
+  ['netease','qq','navidrome','both'].forEach(function(key){
     var btn = document.getElementById('user-provider-' + key);
     if (btn) btn.classList.toggle('active', key === 'both' ? dualAccountMode : (!dualAccountMode && activeAccountProvider === key));
   });
   if (addNetease) addNetease.style.display = hasPlatformLogin('netease') ? 'none' : '';
   if (addQQ) addQQ.textContent = hasPlatformLogin('qq') ? '查看 QQ 音乐' : '补登 QQ 音乐';
-  if (logoutBtn) logoutBtn.textContent = activeAccountProvider === 'qq' ? '退出 QQ 音乐' : '退出网易云';
+  if (addNav) addNav.textContent = hasPlatformLogin('navidrome') ? '查看 Navidrome' : '补登 Navidrome';
+  if (logoutBtn) {
+    logoutBtn.textContent = activeAccountProvider === 'qq' ? '退出 QQ 音乐'
+      : (activeAccountProvider === 'navidrome' ? '退出 Navidrome' : '退出网易云');
+  }
   if (hint) hint.textContent = dualAccountMode
     ? '右上角已切换为双平台并排展示。'
-    : '可切换右上角展示的平台；“我两个都要”会并排放两个登录状态。';
+    : '可切换右上角展示的平台；登录 Navidrome 后会并排展示本地音乐库状态。';
 }
 function showUserModal() {
   if (!hasAnyPlatformLogin()) return showLoginModal();
@@ -23788,7 +24139,7 @@ function showUserModal() {
 }
 function closeUserModal() { closeGsapModal(document.getElementById('user-modal')); }
 function setActiveAccountProvider(provider) {
-  provider = provider === 'qq' ? 'qq' : 'netease';
+  provider = provider === 'qq' || provider === 'navidrome' ? provider : 'netease';
   if (!hasPlatformLogin(provider)) {
     openProviderLogin(provider);
     return;
@@ -23799,7 +24150,8 @@ function setActiveAccountProvider(provider) {
   updateUserModalUi();
 }
 function enableDualAccountView() {
-  if (!hasPlatformLogin('netease') && !hasPlatformLogin('qq')) {
+  var anyLogged = hasPlatformLogin('netease') || hasPlatformLogin('qq') || hasPlatformLogin('navidrome');
+  if (!anyLogged) {
     openProviderLogin('netease');
     return;
   }
@@ -23820,7 +24172,7 @@ function requestDualLoginMode() {
   enableDualAccountView();
 }
 function openProviderLogin(provider) {
-  provider = provider === 'qq' ? 'qq' : 'netease';
+  provider = provider === 'qq' || provider === 'navidrome' ? provider : 'netease';
   closeUserModal();
   loginProvider = provider;
   showLoginModal({ provider: provider });
@@ -23842,6 +24194,20 @@ async function logoutActiveAccount() {
     if (hasAnyPlatformLogin()) updateUserModalUi();
     else closeUserModal();
     showToast('已退出 QQ 音乐');
+    return;
+  }
+  if (activeAccountProvider === 'navidrome') {
+    try { await apiJson('/api/navidrome/logout'); } catch (e) {}
+    navidromeLoginStatus = { provider: 'navidrome', loggedIn: false, server: '', username: '', nickname: '', userId: '', allowSelfSigned: false, adminRole: false, lastError: '' };
+    userPlaylists = userPlaylists.filter(function(pl){ return pl.provider !== 'navidrome'; });
+    dualAccountMode = false;
+    activeAccountProvider = firstLoggedProvider();
+    if (!hasPlatformLogin('netease') || !hasPlatformLogin('qq')) dualAccountMode = false;
+    renderUserBtn();
+    updateSearchModeTabs();
+    if (hasAnyPlatformLogin()) updateUserModalUi();
+    else closeUserModal();
+    showToast('已退出 Navidrome');
     return;
   }
   doLogout();
@@ -26565,8 +26931,9 @@ if (fx.floatLayer) createFloatLayer();
 if (fx.particleLyrics) createLyricsParticles();
 if (fx.backCover) createBackCoverLayer();
 initIdleGuideCanvas();
-var startupLoginStatusPromise = Promise.all([refreshLoginStatus(), refreshQQLoginStatus()]);
+var startupLoginStatusPromise = Promise.all([refreshLoginStatus(), refreshQQLoginStatus(), refreshNavidromeLoginStatus()]);
 startQQLoginStatusAutoRefresh();
+startNavidromeLoginStatusAutoRefresh();
 if (startupLoginStatusPromise && startupLoginStatusPromise.then) {
   startupLoginStatusPromise.then(function(){
     if (hasAnyPlatformLogin()) {
